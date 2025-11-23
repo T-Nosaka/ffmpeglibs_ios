@@ -53,3 +53,59 @@ dkms.conf
 
 # debug information files
 *.dwo
+
+# xcode
+# プロジェクトファイル
+!*.xcodeproj
+!*.xcworkspace
+
+# 不要ファイル
+*.xcodeproj/xcuserdata/
+*.xcodeproj/project.xcworkspace/xcuserdata/
+*.xcodeproj/project.xcworkspace/xcshareddata/
+*.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/
+*.xcworkspace/xcuserdata/
+*.xcworkspace/xcshareddata/
+
+# Derived Data
+DerivedData/
+
+# Build 成果物
+build/
+*.app
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Xcode のキャッシュ・設定
+*.moved-aside
+*.pbxuser
+*.perspectivev3
+*.mode1v3
+*.mode2v3
+
+# Swift Package Manager
+.swiftpm/
+Package.resolved
+
+# CocoaPods
+Pods/
+Podfile.lock
+*.xcworkspace
+
+# Carthage
+Carthage/
+
+# fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/
+fastlane/test_output/
+
+# その他
+.DS_Store
+*.swp
+*.log
+
+# 個人用設定
+*.xcuserstate
