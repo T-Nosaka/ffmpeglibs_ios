@@ -1,4 +1,7 @@
 #!/bin/bash
+#
+# brew install automake
+#
 
 rm -rf output/*
 

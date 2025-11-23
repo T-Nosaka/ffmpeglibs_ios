@@ -1,6 +1,7 @@
 #!/bin/bash
 
-#brew install cmake
+#https://cmake.org/files/v3.16/cmake-3.16.0-Darwin-x86_64.dmg
+#sudo "/Applications/CMake.app/Contents/bin/cmake-gui" --install
 
 #TOOLCHAIN
 export TOOLCHAIN="/Applications/Xcode.app/Contents/Developer/Platforms/"

@@ -109,3 +109,13 @@ fastlane/test_output/
 
 # 個人用設定
 *.xcuserstate
+
+# ライブラリ本体
+ffmpeg/ffmpeg-*
+ffmpeg/output/
+dav1d/dav1d*
+dav1d/output/
+libsvtav1/SVT-AV1*
+libsvtav1/makegenerate/
+libsvtav1/output/
+
