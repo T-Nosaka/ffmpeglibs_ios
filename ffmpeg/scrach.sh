@@ -30,15 +30,18 @@ make_ios() {
 
   #Library paths
   export C_INCLUDE_PATH=""
+  export C_INCLUDE_PATH=${C_INCLUDE_PATH}:${SRCFOLDER}/../fdk-aac/output/${ARCH}/${OUTTYPE}
   export C_INCLUDE_PATH=${C_INCLUDE_PATH}:${SRCFOLDER}/../libsvtav1/output/${ARCH}/${OUTTYPE}
   export C_INCLUDE_PATH=${C_INCLUDE_PATH}:${SRCFOLDER}/../dav1d/output/${ARCH}/${OUTTYPE}/include
 
   #for configure test module
   export LDFLAGS=${LDFLAGS}" -lstdc++"
+  export LDFLAGS=${LDFLAGS}" -L"${SRCFOLDER}/../fdk-aac/output/${ARCH}/${OUTTYPE}
   export LDFLAGS=${LDFLAGS}" -L"${SRCFOLDER}/../libsvtav1/output/${ARCH}/${OUTTYPE}
   export LDFLAGS=${LDFLAGS}" -L"${SRCFOLDER}/../dav1d/output/${ARCH}/${OUTTYPE}
 
-  EXTCODEC='--enable-libdav1d
+  EXTCODEC='--enable-libfdk-aac
+          --enable-libdav1d
           --enable-libsvtav1'
 
   ./configure \

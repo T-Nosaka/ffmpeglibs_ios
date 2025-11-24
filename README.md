@@ -15,6 +15,7 @@ $(PROJECT_DIR)/ffmpeglib/ffmpeg/output/arm64/iOSSim/fftools
 $(PROJECT_DIR)/ffmpeglib/ffmpeg/output/arm64/iOSSim
 $(PROJECT_DIR)/ffmpeglib/libsvtav1/output/arm64/iOSSim
 $(PROJECT_DIR)/ffmpeglib/dav1d/output/arm64/iOSSim
+$(PROJECT_DIR)/ffmpeglib/fdk-aac/output/arm64/iOSSim
 ```
 
 Additionally, specify the following link libraries.
@@ -29,6 +30,7 @@ Additionally, specify the following link libraries.
 -lavdevice
 -ldav1d
 -lSvtAv1Enc
+-lfdk-aac
 ```
 
 # example
@@ -56,7 +58,7 @@ let args = [
         "-c:v", "libsvtav1",
         "-preset", "8",
         "-crf", "40",
-        "-c:a", "copy",
+        "-c:a", "libfdk_aac", "-b:a", "128k",
         "-y",
         output.path
     ]
@@ -89,3 +91,7 @@ https://gitlab.com/AOMediaCodec/SVT-AV1/-/archive/v3.1.2/SVT-AV1-v3.1.2.tar.gz
 - Requires meson
 
 https://github.com/videolan/dav1d/archive/refs/tags/1.5.1.tar.gz
+
+## fdk-aac
+
+https://github.com/mstorsjo/fdk-aac/archive/refs/tags/v2.0.3.tar.gz

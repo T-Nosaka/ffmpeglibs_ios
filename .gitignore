@@ -118,4 +118,6 @@ dav1d/output/
 libsvtav1/SVT-AV1*
 libsvtav1/makegenerate/
 libsvtav1/output/
-
+fdk-aac/fdk-aac-*
+fdk-aac/makegenerate/
+fdk-aac/output/
