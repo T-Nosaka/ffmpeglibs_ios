@@ -1,5 +1,5 @@
 # ffmpeglibs_ios
-ffmpeg library build script for iphone
+ffmpeg static library build script for iphone
 
 FFmpeg build script for iOS.
 
@@ -29,6 +29,43 @@ Additionally, specify the following link libraries.
 -lavdevice
 -ldav1d
 -lSvtAv1Enc
+```
+
+# example
+
+```
+import ffmpeglib
+
+...
+
+let fileURL = FileManager.default.temporaryDirectory.appendingPathComponent(resource.originalFilename)
+PHAssetResourceManager.default().writeData(for: resource, toFile: fileURL, options: nil) { error in
+    if let error = error {
+        print("Error: \(error)")
+    } else {
+        print("Saved video to: \(fileURL)")
+    }
+}
+                            
+let output = FileManager.default.temporaryDirectory
+        .appendingPathComponent("output_av1.mp4")
+
+let args = [
+        "ffmpeg",
+        "-i", fileURL.path,
+        "-c:v", "libsvtav1",
+        "-preset", "8",
+        "-crf", "40",
+        "-c:a", "copy",
+        "-y",
+        output.path
+    ]
+                            
+let conv = ffmpeglib.Convert()
+let convresult = conv.go(args: args) { start, cur, pts in
+    print(" start: \(start), cur: \(cur), pts: \(pts) ")
+    return true
+}
 ```
 
 ## ffmpeg
