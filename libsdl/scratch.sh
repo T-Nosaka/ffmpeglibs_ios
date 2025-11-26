@@ -1,0 +1,123 @@
+#!/bin/bash
+
+#hhttps://cmake.org/files/v3.24/cmake-3.24.0-macos-universal.dmg
+#sudo "/Applications/CMake.app/Contents/bin/cmake-gui" --install
+CMAKE3_24="/Applications/CMake 2.app/Contents/bin/cmake"
+PATH=${CMAKE3_24}:${PATH}
+
+#TOOLCHAIN
+export TOOLCHAIN="/Applications/Xcode.app/Contents/Developer/Platforms/"
+export LIBSDL=SDL2-2.32.2
+export OUTPUT_DIR=`pwd`/output
+export MAKE=make
+export CMAKE=cmake
+
+
+make_ios() {
+  ARCH=$1
+  export OUTTYPE=$3
+
+  rm -rf makegenerate/${ARCH}/${OUTTYPE}
+
+  ${CMAKE} \
+  -H${LIBSDL} \
+  -Bmakegenerate/${ARCH} \
+  -DBUILD_SHARED_LIBS=OFF \
+  -DBUILD_TESTING=OFF \
+  -DBUILD_APPS=OFF \
+  -DCMAKE_VERBOSE_MAKEFILE=TRUE \
+  -DCMAKE_C_COMPILER=clang \
+  -DCMAKE_CXX_COMPILER=clang++ \
+  -DCMAKE_ASM_NASM_COMPILER=clang \
+  -DCMAKE_ASM=clang \
+  -DCMAKE_MAKE_PROGRAM=${MAKE} \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_MACOSX_BUNDLE=NO \
+  -DCMAKE_OSX_SYSROOT=${TOOLCHAIN}${2} \
+  -DCMAKE_SYSTEM_NAME=Darwin \
+  -DCMAKE_VERBOSE_MAKEFILE=TRUE \
+  -DCMAKE_OSX_ARCHITECTURES=$1 \
+  -DSDL2_DISABLE_SDL2MAIN=ON \
+  -DSDL2_DISABLE_INSTALL=ON \
+  -DSDL_MISC=OFF \
+  -DSDL_SHARED=OFF \
+  -DSDL_STATIC=ON \
+  -DSDL_TEST=OFF \
+  -DSDL_TESTS=OFF \
+  -DSDL_INSTALL_TESTS=OFF \
+  -DSDL_FILESYSTEM=OFF \
+  -DSDL_COCOA=OFF \
+  -DSDL_METAL=OFF \
+  -DSDL_RENDER_METAL=OFF \
+  -DSDL_JOYSTICK=OFF \
+  -DSDL_HAPTIC=OFF \
+  -DSDL_AUDIO=OFF \
+  -DSDL_DUMMYAUDIO=ON \
+  -DSDL_DUMMYVIDEO=ON \
+  -DSDL_DBUS=OFF \
+  -DSDL_DISKAUDIO=OFF \
+  -DSDL_DIRECTFB=OFF \
+  -DSDL_DIRECTFB_SHARED=OFF \
+  -DSDL_IBUS=OFF \
+  -DSDL_SYSTEM_ICONV=OFF \
+  -DSDL_LIBICONV=OFF \
+  -DSDL_OPENGL=OFF \
+  -DSDL_OPENGLES=OFF \
+  -DSDL_PTHREADS=ON \
+  -DSDL_PTHREADS_SEM=ON \
+  -DSDL_OSS=OFF \
+  -DSDL_ALSA=OFF \
+  -DSDL_ALSA_SHARED=OFF \
+  -DSDL_JACK=OFF \
+  -DSDL_JACK_SHARED=OFF \
+  -DSDL_ESD=OFF \
+  -DSDL_ESD_SHARED=OFF \
+  -DSDL_PIPEWIRE=OFF \
+  -DSDL_PIPEWIRE_SHARED=OFF \
+  -DSDL_POWER=OFF \
+  -DSDL_PULSEAUDIO=OFF \
+  -DSDL_PULSEAUDIO_SHARED=OFF \
+  -DSDL_ARTS=OFF \
+  -DSDL_ARTS_SHARED=OFF \
+  -DSDL_NAS=OFF \
+  -DSDL_NAS_SHARED=OFF \
+  -DSDL_SNDIO=OFF \
+  -DSDL_SNDIO_SHARED=OFF \
+  -DSDL_FUSIONSOUND=OFF \
+  -DSDL_FUSIONSOUND_SHARED=OFF \
+  -DSDL_LIBSAMPLERATE=OFF \
+  -DSDL_LIBSAMPLERATE_SHARED=OFF \
+  -DSDL_RPATH=OFF \
+  -DSDL_CLOCK_GETTIME=OFF \
+  -DSDL_X11=OFF \
+  -DSDL_X11_SHARED=OFF \
+  -DSDL_WAYLAND=OFF \
+  -DSDL_WAYLAND_SHARED=OFF \
+  -DSDL_VULKAN=OFF \
+  -DSDL_METAL=OFF \
+  -DSDL_KMSDRM=OFF \
+  -DSDL_KMSDRM_SHARED=OFF \
+  -DSDL_OFFSCREEN=OFF \
+  -DSDL_HIDAPI=OFF \
+  -DSDL_HIDAPI_JOYSTICK=OFF \
+  -DSDL_VIRTUAL_JOYSTICK=OFF \
+  -DSDL_LIBUDEV=OFF \
+  -DSDL_CCACHE=OFF
+
+  cd makegenerate/${ARCH}
+  ${MAKE}
+  mkdir -p ${OUTPUT_DIR}/${ARCH}/${OUTTYPE}
+
+  find . -name '*.a' -print | xargs -I % -t cp % ${OUTPUT_DIR}/${ARCH}/${OUTTYPE}/.
+  cp -r ../../${LIBSDL}/include ${OUTPUT_DIR}/${ARCH}/${OUTTYPE}/.
+}
+
+#Rebuild
+rm -rf makegenerate
+rm -rf output/*
+
+#ABI simulator
+make_ios arm64 "iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk" "iOSSim"
+
+#ABI iphone
+make_ios arm64 "iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk" "iOS"

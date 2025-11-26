@@ -121,3 +121,6 @@ libsvtav1/output/
 fdk-aac/fdk-aac-*
 fdk-aac/makegenerate/
 fdk-aac/output/
+libsdl/SDL2-*
+libsdl/makegenerate/
+libsdl/output/

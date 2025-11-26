@@ -95,3 +95,7 @@ https://github.com/videolan/dav1d/archive/refs/tags/1.5.1.tar.gz
 ## fdk-aac
 
 https://github.com/mstorsjo/fdk-aac/archive/refs/tags/v2.0.3.tar.gz
+
+## libsdl
+
+https://github.com/libsdl-org/SDL/releases/download/release-2.32.2/SDL2-2.32.2.tar.gz
