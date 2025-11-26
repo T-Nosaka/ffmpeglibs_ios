@@ -16,6 +16,7 @@ $(PROJECT_DIR)/ffmpeglib/ffmpeg/output/arm64/iOSSim
 $(PROJECT_DIR)/ffmpeglib/libsvtav1/output/arm64/iOSSim
 $(PROJECT_DIR)/ffmpeglib/dav1d/output/arm64/iOSSim
 $(PROJECT_DIR)/ffmpeglib/fdk-aac/output/arm64/iOSSim
+$(PROJECT_DIR)/ffmpeglib/libsdl/output/arm64/iOSSim
 ```
 
 Additionally, specify the following link libraries.
@@ -31,6 +32,7 @@ Additionally, specify the following link libraries.
 -ldav1d
 -lSvtAv1Enc
 -lfdk-aac
+-lSDL2
 ```
 
 # example
