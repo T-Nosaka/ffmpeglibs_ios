@@ -12,7 +12,7 @@ make_ios() {
   ARCH=$1
   export OUTTYPE=$3
 
-  rm -rf makegenerate/${ARCH}/${OUTTYPE}
+  rm -rf makegenerate/${ARCH}
 
   ${CMAKE} \
   -H${FDKAAC} \
@@ -32,7 +32,9 @@ make_ios() {
   -DCMAKE_OSX_SYSROOT=${TOOLCHAIN}${2} \
   -DCMAKE_SYSTEM_NAME=Darwin \
   -DCMAKE_VERBOSE_MAKEFILE=TRUE \
-  -DCMAKE_OSX_ARCHITECTURES=$1
+  -DCMAKE_OSX_ARCHITECTURES=$1 \
+  -DCMAKE_C_FLAGS=$4 \
+  -DCMAKE_CXX_FLAGS=$4
 
   cd makegenerate/${ARCH}
   ${MAKE}
@@ -44,12 +46,3 @@ make_ios() {
   cp -rp ../../${FDKAAC}/libSYS/include/* ${OUTPUT_DIR}/${ARCH}/${OUTTYPE}/fdk-aac/.
 }
 
-#Rebuild
-rm -rf makegenerate
-rm -rf output/*
-
-#ABI simulator
-make_ios arm64 "iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk" "iOSSim"
-
-#ABI iphone
-make_ios arm64 "iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk" "iOS"

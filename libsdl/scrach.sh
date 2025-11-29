@@ -2,15 +2,14 @@
 
 #hhttps://cmake.org/files/v3.24/cmake-3.24.0-macos-universal.dmg
 #sudo "/Applications/CMake.app/Contents/bin/cmake-gui" --install
-CMAKE3_24="/Applications/CMake 2.app/Contents/bin/cmake"
-PATH=${CMAKE3_24}:${PATH}
+export CMAKE3_24="/Applications/CMake 2.app/Contents/bin/cmake"
 
 #TOOLCHAIN
 export TOOLCHAIN="/Applications/Xcode.app/Contents/Developer/Platforms/"
 export LIBSDL=SDL2-2.32.2
 export OUTPUT_DIR=`pwd`/output
 export MAKE=make
-export CMAKE=cmake
+export CMAKE=${CMAKE3_24}
 
 
 make_ios() {
@@ -19,7 +18,7 @@ make_ios() {
 
   rm -rf makegenerate/${ARCH}/${OUTTYPE}
 
-  ${CMAKE} \
+  "${CMAKE}" \
   -H${LIBSDL} \
   -Bmakegenerate/${ARCH} \
   -DBUILD_SHARED_LIBS=OFF \
@@ -37,6 +36,8 @@ make_ios() {
   -DCMAKE_SYSTEM_NAME=Darwin \
   -DCMAKE_VERBOSE_MAKEFILE=TRUE \
   -DCMAKE_OSX_ARCHITECTURES=$1 \
+  -DCMAKE_C_FLAGS=$4 \
+  -DCMAKE_CXX_FLAGS=$4 \
   -DSDL2_DISABLE_SDL2MAIN=ON \
   -DSDL2_DISABLE_INSTALL=ON \
   -DSDL_MISC=OFF \
@@ -112,12 +113,3 @@ make_ios() {
   cp -r ../../${LIBSDL}/include ${OUTPUT_DIR}/${ARCH}/${OUTTYPE}/.
 }
 
-#Rebuild
-rm -rf makegenerate
-rm -rf output/*
-
-#ABI simulator
-make_ios arm64 "iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk" "iOSSim"
-
-#ABI iphone
-make_ios arm64 "iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk" "iOS"
