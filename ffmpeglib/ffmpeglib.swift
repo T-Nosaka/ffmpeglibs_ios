@@ -103,23 +103,23 @@ public class Play {
     }
 
     public func setAudio( bAudio: Bool ) {
-        wrapper.setAudio(bAudio)
+        self.wrapper.setAudio(bAudio)
     }
     public func setVideo( bVideo: Bool ) {
-        wrapper.setVideo(bVideo)
+        self.wrapper.setVideo(bVideo)
     }
     public func setSubTitle( bSubtitle: Bool ) {
-        wrapper.setSubTitle(bSubtitle)
+        self.wrapper.setSubTitle(bSubtitle)
     }
     public func setAutoexit( bAutoexit: Bool ) {
-        wrapper.setAutoexit(bAutoexit)
+        self.wrapper.setAutoexit(bAutoexit)
     }
     
     public func audiocallback(stream:Data, len:Int32) {
         var mutableStream = stream
         mutableStream.withUnsafeMutableBytes { rawBuffer in
             let ptr = rawBuffer.bindMemory(to: UInt8.self).baseAddress!
-            wrapper.audiocallback(ptr, len)
+            self.wrapper.audiocallback(ptr, len)
         }
     }
     
@@ -132,7 +132,7 @@ public class Play {
     private var FFPlay_OnStartAudio: (()->Void)? = nil
     private var FFPlay_OnStopAudio: (()->Void)? = nil
     private var FFPlay_UpdateSubtitleCb: (()->Void)? = nil
-
+    
     //
     // set Extra Callback
     //
@@ -155,7 +155,7 @@ public class Play {
         self.FFPlay_OnStopAudio = onstopaudio
         self.FFPlay_UpdateSubtitleCb = update_subtile_cb
 
-        wrapper.setExtCallback( Unmanaged.passUnretained(self).toOpaque(),
+        self.wrapper.setExtCallback( Unmanaged.passUnretained(self).toOpaque(),
             { contextPointer in
                 return Unmanaged<Play>.fromOpaque(contextPointer!).takeUnretainedValue().FFPlay_onExit?() ?? false
             },
@@ -187,6 +187,10 @@ public class Play {
                 Unmanaged<Play>.fromOpaque(contextPointer!).takeUnretainedValue().FFPlay_UpdateSubtitleCb?()
             }
         )
+    }
+    
+    public func play( strfilename:String, vfilter:String, afilter:String ) -> Int {
+        return Int(self.wrapper.play( strfilename, vfilter, afilter ));
     }
 }
 

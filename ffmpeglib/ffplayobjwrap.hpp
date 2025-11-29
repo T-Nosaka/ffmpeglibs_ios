@@ -11,12 +11,26 @@
 #import <swift/bridging>
 
 #include <stdint.h>
+#include <string>
 
 class ffplayobj;
 
 class ffplayobjwrap {
 protected:
     ffplayobj* player;
+    
+    //allocate pixeldata
+    uint32_t* m_pixeldata;
+    int m_pixeldata_length;
+    void alloc_pixeldata( int length ) {
+        if( m_pixeldata_length < length ) {
+            if( m_pixeldata != nullptr ) {
+                delete m_pixeldata;
+            }
+            m_pixeldata = new uint32_t[length];
+            m_pixeldata_length = length;
+        }
+    }
     
 public:
     ffplayobjwrap();
@@ -42,6 +56,7 @@ public:
                         void (*onstopaudio)(void*) = nullptr,
                         void (*update_subtile_cb)(void*) = nullptr );
 
+    int play(const char* strfilename, const char* vfilter, const char* afilter );
 } SWIFT_UNSAFE_REFERENCE;
 
 #endif /* ffplayobjwrap_hpp */

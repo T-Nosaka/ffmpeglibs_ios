@@ -18,10 +18,17 @@ SDL_bool SDL_IsIPad(void) {
 
 ffplayobjwrap::ffplayobjwrap() {
     player = new ffplayobj();
+    m_pixeldata = nullptr;
+    m_pixeldata_length = 0;
 }
 
 ffplayobjwrap::~ffplayobjwrap() {
     delete player;
+    if( m_pixeldata != nullptr) {
+        delete m_pixeldata;
+        m_pixeldata = nullptr;
+        m_pixeldata_length = 0;
+    }
 }
 
 void ffplayobjwrap::Delete(ffplayobjwrap* p) {
@@ -65,7 +72,7 @@ void ffplayobjwrap::setExtCallback( void* ext,
                            [this,ext,upload_texture_cb](ffplayobj& instance,int width, int height, int format, const void *pixels, int pitch) {
 
                                auto numPixels = width * height;
-                               auto pixelData = new uint8_t(numPixels);
+                               alloc_pixeldata(numPixels);
                                //Repackaging RGB24 into an Integer Array
                                auto srcPixels = static_cast<const uint8_t*>(pixels);
                                for (int y = 0; y < height; ++y) {
@@ -74,11 +81,10 @@ void ffplayobjwrap::setExtCallback( void* ext,
                                        uint8_t r = row[x * 3];
                                        uint8_t g = row[x * 3 + 1];
                                        uint8_t b = row[x * 3 + 2];
-                                       pixelData[y * width + x] = (0xFF << 24) | (r << 16) | (g << 8) | b;
+                                       m_pixeldata[y * width + x] = (0xFF << 24) | (r << 16) | (g << 8) | b;
                                    }
                                }
-                               
-                               upload_texture_cb( ext, width, height, format, pixelData, pitch);
+                               upload_texture_cb( ext, width, height, format, m_pixeldata, pitch);
                            },
                            [this,ext,oncontrol](ffplayobj& instance,int64_t* control, float* fargs) {
                                return oncontrol( ext, control, fargs);
@@ -97,4 +103,8 @@ void ffplayobjwrap::setExtCallback( void* ext,
                            }
                            );
     
+}
+
+int ffplayobjwrap::play(const char* strfilename, const char* vfilter, const char* afilter ) {
+    return player->play(strfilename,vfilter,afilter);
 }
