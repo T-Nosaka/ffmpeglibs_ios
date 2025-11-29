@@ -259,8 +259,31 @@
 					"$(PROJECT_DIR)/ffmpeglib/../ffmpeg/output/arm64/iOSSim",
 					"$(PROJECT_DIR)/ffmpeglib/../ffmpeg/output/arm64/iOSSim/fftools/**",
 					"$(PROJECT_DIR)/ffmpeglib/../ffmpeg/output/arm64/iOSSim/compat/stdbit",
+					"$(PROJECT_DIR)/ffmpeglib/../libsdl/output/arm64/iOSSim/include",
+				);
+				"HEADER_SEARCH_PATHS[sdk=iphoneos*]" = (
+					"$(PROJECT_DIR)/ffmpeglib/../ffmpeg/output/arm64/iOS",
+					"$(PROJECT_DIR)/ffmpeglib/../ffmpeg/output/arm64/iOS/fftools/**",
+					"$(PROJECT_DIR)/ffmpeglib/../ffmpeg/output/arm64/iOS/compat/stdbit",
+					"$(PROJECT_DIR)/ffmpeglib/../libsdl/output/arm64/iOS/include",
+				);
+				"HEADER_SEARCH_PATHS[sdk=iphonesimulator*]" = (
+					"$(PROJECT_DIR)/ffmpeglib/../ffmpeg/output/arm64/iOSSim",
+					"$(PROJECT_DIR)/ffmpeglib/../ffmpeg/output/arm64/iOSSim/fftools/**",
+					"$(PROJECT_DIR)/ffmpeglib/../ffmpeg/output/arm64/iOSSim/compat/stdbit",
+					"$(PROJECT_DIR)/ffmpeglib/../libsdl/output/arm64/iOSSim/include",
 				);
 				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/ffmpeglib",
+					"$(PROJECT_DIR)/ffmpeglib/../ffmpeg/output/arm64/iOSSim",
+				);
+				"LIBRARY_SEARCH_PATHS[sdk=iphoneos*]" = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/ffmpeglib",
+					"$(PROJECT_DIR)/ffmpeglib/../ffmpeg/output/arm64/iOS",
+				);
+				"LIBRARY_SEARCH_PATHS[sdk=iphonesimulator*]" = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/ffmpeglib",
 					"$(PROJECT_DIR)/ffmpeglib/../ffmpeg/output/arm64/iOSSim",
@@ -271,6 +294,7 @@
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_INCLUDE_PATHS = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "ffmpeglib/ffmpeglib-Bridging-Header.h";
+				SWIFT_OBJC_INTEROP_MODE = objcxx;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_PRECOMPILE_BRIDGING_HEADER = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
@@ -287,8 +311,9 @@
 				DEVELOPMENT_TEAM = CEC245UV75;
 				HEADER_SEARCH_PATHS = (
 					"$(PROJECT_DIR)/ffmpeglib/../ffmpeg/output/arm64/iOS",
-					"$(PROJECT_DIR)/ffmpeglib/../ffmpeg/output/arm64/iOS/fftools",
+					"$(PROJECT_DIR)/ffmpeglib/../ffmpeg/output/arm64/iOS/fftools/**",
 					"$(PROJECT_DIR)/ffmpeglib/../ffmpeg/output/arm64/iOS/compat/stdbit",
+					"$(PROJECT_DIR)/ffmpeglib/../libsdl/output/arm64/iOS/include",
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -301,6 +326,7 @@
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_INCLUDE_PATHS = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "ffmpeglib/ffmpeglib-Bridging-Header.h";
+				SWIFT_OBJC_INTEROP_MODE = objcxx;
 				SWIFT_PRECOMPILE_BRIDGING_HEADER = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 6.0;

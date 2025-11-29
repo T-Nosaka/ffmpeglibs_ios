@@ -82,3 +82,80 @@ public class Convert {
 
 }
 
+//
+// FFMpeg play
+//
+public class Play {
+    
+    private let wrapper: ffplayobjwrap = ffplayobjwrap()
+    
+    //
+    // Construct
+    //
+    public init() {
+    }
+    
+    //
+    // Destruct
+    //
+    deinit {
+        ffplayobjwrap.Delete(wrapper)
+    }
+
+    public func setAudio( bAudio: Bool ) {
+        wrapper.setAudio(bAudio)
+    }
+    public func setVideo( bVideo: Bool ) {
+        wrapper.setVideo(bVideo)
+    }
+    public func setSubTitle( bSubtitle: Bool ) {
+        wrapper.setSubTitle(bSubtitle)
+    }
+    public func setAutoexit( bAutoexit: Bool ) {
+        wrapper.setAutoexit(bAutoexit)
+    }
+    
+    public func audiocallback(stream:Data, len:Int32) {
+        var mutableStream = stream
+        mutableStream.withUnsafeMutableBytes { rawBuffer in
+            let ptr = rawBuffer.bindMemory(to: UInt8.self).baseAddress!
+            wrapper.audiocallback(ptr, len)
+        }
+    }
+    
+    // Define callback function
+    private var FFPlay_onExit: (()->Bool)? = nil
+    private var FFPlay_onClock: ((Double,Double,Int32)->Void)? = nil
+    private var FFPlay_UploadTextureCb: ((Int,Int,Int,[UInt8],Int)->Void)? = nil
+    private var FFPlay_onControl: ((UnsafeMutablePointer<Int64>,UnsafeMutablePointer<Float>)->Bool)? = nil
+    private var FFPlay_ReadyAudiodevice: ((Int,Int)->Bool)? = nil
+    private var FFPlay_OnStartAudio: (()->Void)? = nil
+    private var FFPlay_OnStopAudio: (()->Void)? = nil
+    private var FFPlay_UpdateSubtitleCb: (()->Void)? = nil
+
+    //
+    // set Extra Callback
+    //
+    public func setExtCallback(
+        onexit:@escaping ()->Bool,
+        onclock:@escaping (_ pos:Double,_ clock:Double,_ pause:Int32)->Void,
+        upload_texture_cb:@escaping (_ width:Int,_ height:Int,_ format:Int,_ pixels:[UInt8],_ pitch:Int)->Void,
+        oncontrol:@escaping (_ control: UnsafeMutablePointer<Int64>,_ fargs:UnsafeMutablePointer<Float>)->Bool,
+        readyaudiodevice:@escaping (_ channel:Int, _ sample_rate:Int)->Bool,
+        onstartaudio:@escaping ()->Void,
+        onstopaudio:@escaping ()->Void,
+        update_subtile_cb:@escaping ()->Void
+    ) {
+        self.FFPlay_onExit = onexit
+        self.FFPlay_onClock = onclock
+        self.FFPlay_UploadTextureCb = upload_texture_cb
+        self.FFPlay_onControl = oncontrol
+        self.FFPlay_ReadyAudiodevice = readyaudiodevice
+        self.FFPlay_OnStartAudio = onstartaudio
+        self.FFPlay_OnStopAudio = onstopaudio
+        self.FFPlay_UpdateSubtitleCb = update_subtile_cb
+
+        wrapper.setExtCallback( Unmanaged.passUnretained(self).toOpaque() )
+    }
+}
+
