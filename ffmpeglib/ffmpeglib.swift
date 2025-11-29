@@ -155,7 +155,38 @@ public class Play {
         self.FFPlay_OnStopAudio = onstopaudio
         self.FFPlay_UpdateSubtitleCb = update_subtile_cb
 
-        wrapper.setExtCallback( Unmanaged.passUnretained(self).toOpaque() )
+        wrapper.setExtCallback( Unmanaged.passUnretained(self).toOpaque(),
+            { contextPointer in
+                return Unmanaged<Play>.fromOpaque(contextPointer!).takeUnretainedValue().FFPlay_onExit?() ?? false
+            },
+            { contextPointer, pos, clock, pause in
+                Unmanaged<Play>.fromOpaque(contextPointer!).takeUnretainedValue().FFPlay_onClock?( pos, clock, pause )
+            },
+            { contextPointer , width, height, format, pixelsPointer, pitch in
+                let numPixels:Int = Int(width * height)
+                var pixelArray:[UInt8] = []
+                pixelsPointer!.withMemoryRebound(to: UInt8.self, capacity: numPixels) { typedPointer in
+                    // build swift UInt8 array
+                    pixelArray = Array(UnsafeBufferPointer(start: typedPointer, count: numPixels))
+                }
+                Unmanaged<Play>.fromOpaque(contextPointer!).takeUnretainedValue().FFPlay_UploadTextureCb?(Int(width), Int(height), Int(format), pixelArray, Int(pitch))
+            },
+            { contextPointer, control, fargs in
+                return Unmanaged<Play>.fromOpaque(contextPointer!).takeUnretainedValue().FFPlay_onControl?( control!, fargs! ) ?? false
+            },
+            { contextPointer,channel,sample_rate in
+                return Unmanaged<Play>.fromOpaque(contextPointer!).takeUnretainedValue().FFPlay_ReadyAudiodevice?( Int(channel), Int(sample_rate) ) ?? false
+            },
+            { contextPointer in
+                Unmanaged<Play>.fromOpaque(contextPointer!).takeUnretainedValue().FFPlay_OnStartAudio?()
+            },
+            { contextPointer in
+                Unmanaged<Play>.fromOpaque(contextPointer!).takeUnretainedValue().FFPlay_OnStopAudio?()
+            },
+            { contextPointer in
+                Unmanaged<Play>.fromOpaque(contextPointer!).takeUnretainedValue().FFPlay_UpdateSubtitleCb?()
+            }
+        )
     }
 }
 
