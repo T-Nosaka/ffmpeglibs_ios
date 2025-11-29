@@ -97,7 +97,7 @@ cd fftools/resources
 ```
 ./scrach.sh
 ```
-# example
+# example ffmpeg
 ```
 import ffmpeglib
 
@@ -131,4 +131,37 @@ let convresult = conv.go(args: args) { start, cur, pts in
     print(" start: \(start), cur: \(cur), pts: \(pts) ")
     return true
 }
+```
+# example ffplay
+```
+    let ffplay = ffmpeglib.Play()
+    ffplay.setExtCallback( onexit: {
+        // control stop
+        return true
+    },onclock: { pos, clock, pause in
+        // display duration time
+        print( "\(pos),\(clock)" )
+    },upload_texture_cb: { width, height, format, pixelsPointer, pitch in
+        // pixel data rgb24
+//        let r = pixelsPointer[0]
+//        let g = pixelsPointer[1]
+//        let b = pixelsPointer[2]
+    },oncontrol: { control, fargs in
+        // control play
+//        control.pointee = 1
+//        control.advanced(by: 1).pointee = 2
+//        fargs.pointee = 3.14159
+        return false
+    },readyaudiodevice: { channel,sample_rate in
+        // ready autdio device
+        return true
+    },onstartaudio: {
+        // on start audio.
+    },onstopaudio: {
+        // on stop audio.
+    },update_subtile_cb: {
+        // not implement.
+    })
+    let ret = ffplay.play(strfilename: fileURL.path, vfilter: "", afilter: "")
+
 ```
