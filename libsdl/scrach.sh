@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#hhttps://cmake.org/files/v3.24/cmake-3.24.0-macos-universal.dmg
+#https://cmake.org/files/v3.24/cmake-3.24.0-macos-universal.dmg
 #sudo "/Applications/CMake.app/Contents/bin/cmake-gui" --install
 export CMAKE3_24="/Applications/CMake 2.app/Contents/bin/cmake"
 

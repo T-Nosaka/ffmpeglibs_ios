@@ -46,6 +46,7 @@ $(PROJECT_DIR)/ffmpeglib/libsdl/output/arm64/iOS
 ```
 ## libsvtav1
 ### Requires cmake 3.16
+https://cmake.org/files/v3.16/cmake-3.16.0-Darwin-x86_64.dmg
 ### build
 ```
 wget https://gitlab.com/AOMediaCodec/SVT-AV1/-/archive/v3.1.2/SVT-AV1-v3.1.2.tar.gz
@@ -55,6 +56,9 @@ tar -xvf SVT-AV1-v3.1.2.tar.gz
 ```
 ## dav1d
 ### Requires meson
+```
+brew install meson
+```
 ### build
 ```
 wget https://github.com/videolan/dav1d/archive/refs/tags/1.5.1.tar.gz
@@ -70,6 +74,8 @@ tar -xvf v2.0.3.tar.gz
 ./iossimscrach.sh
 ```
 ## libsdl
+### Requires cmake 3.24
+https://cmake.org/files/v3.24/cmake-3.24.0-macos-universal.dmg
 ### build
 ```
 wget https://github.com/libsdl-org/SDL/releases/download/release-2.32.2/SDL2-2.32.2.tar.gz
@@ -78,6 +84,10 @@ tar -xvf SDL2-2.32.2.tar.gz
 ./iossimscrach.sh
 ```
 ## ffmpeg
+### Requires automake 1.18.1
+```
+brew install automake
+```
 ### download
 ```
 wget https://www.ffmpeg.org/releases/ffmpeg-8.0.tar.gz
