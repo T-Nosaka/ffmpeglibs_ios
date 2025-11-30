@@ -99,9 +99,9 @@ public class Play {
     // Destruct
     //
     deinit {
-        ffplayobjwrap.Delete(wrapper)
+        ffplayobjwrap.Delete(self.wrapper)
     }
-
+    
     public func setAudio( bAudio: Bool ) {
         self.wrapper.setAudio(bAudio)
     }
@@ -154,38 +154,38 @@ public class Play {
         self.FFPlay_OnStartAudio = onstartaudio
         self.FFPlay_OnStopAudio = onstopaudio
         self.FFPlay_UpdateSubtitleCb = update_subtile_cb
-
+        
         self.wrapper.setExtCallback( Unmanaged.passUnretained(self).toOpaque(),
-            { contextPointer in
-                return Unmanaged<Play>.fromOpaque(contextPointer!).takeUnretainedValue().FFPlay_onExit?() ?? false
-            },
-            { contextPointer, pos, clock, pause in
-                Unmanaged<Play>.fromOpaque(contextPointer!).takeUnretainedValue().FFPlay_onClock?( pos, clock, pause )
-            },
-            { contextPointer , width, height, format, pixelsPointer, pitch in
-                guard pixelsPointer != nil else { return }
-                Unmanaged<Play>.fromOpaque(contextPointer!).takeUnretainedValue().FFPlay_UploadTextureCb?(Int(width), Int(height), Int(format), pixelsPointer!, Int(pitch))
-            },
-            { contextPointer, control, fargs in
-                return Unmanaged<Play>.fromOpaque(contextPointer!).takeUnretainedValue().FFPlay_onControl?( control!, fargs! ) ?? false
-            },
-            { contextPointer,channel,sample_rate in
-                return Unmanaged<Play>.fromOpaque(contextPointer!).takeUnretainedValue().FFPlay_ReadyAudiodevice?( Int(channel), Int(sample_rate) ) ?? false
-            },
-            { contextPointer in
-                Unmanaged<Play>.fromOpaque(contextPointer!).takeUnretainedValue().FFPlay_OnStartAudio?()
-            },
-            { contextPointer in
-                Unmanaged<Play>.fromOpaque(contextPointer!).takeUnretainedValue().FFPlay_OnStopAudio?()
-            },
-            { contextPointer in
-                Unmanaged<Play>.fromOpaque(contextPointer!).takeUnretainedValue().FFPlay_UpdateSubtitleCb?()
-            }
+                                     { contextPointer in
+            return Unmanaged<Play>.fromOpaque(contextPointer!).takeUnretainedValue().FFPlay_onExit?() ?? false
+        },
+                                     { contextPointer, pos, clock, pause in
+            Unmanaged<Play>.fromOpaque(contextPointer!).takeUnretainedValue().FFPlay_onClock?( pos, clock, pause )
+        },
+                                     { contextPointer , width, height, format, pixelsPointer, pitch in
+            guard pixelsPointer != nil else { return }
+            Unmanaged<Play>.fromOpaque(contextPointer!).takeUnretainedValue().FFPlay_UploadTextureCb?(Int(width), Int(height), Int(format), pixelsPointer!, Int(pitch))
+        },
+                                     { contextPointer, control, fargs in
+            return Unmanaged<Play>.fromOpaque(contextPointer!).takeUnretainedValue().FFPlay_onControl?( control!, fargs! ) ?? false
+        },
+                                     { contextPointer,channel,sample_rate in
+            return Unmanaged<Play>.fromOpaque(contextPointer!).takeUnretainedValue().FFPlay_ReadyAudiodevice?( Int(channel), Int(sample_rate) ) ?? false
+        },
+                                     { contextPointer in
+            Unmanaged<Play>.fromOpaque(contextPointer!).takeUnretainedValue().FFPlay_OnStartAudio?()
+        },
+                                     { contextPointer in
+            Unmanaged<Play>.fromOpaque(contextPointer!).takeUnretainedValue().FFPlay_OnStopAudio?()
+        },
+                                     { contextPointer in
+            Unmanaged<Play>.fromOpaque(contextPointer!).takeUnretainedValue().FFPlay_UpdateSubtitleCb?()
+        }
         )
     }
     
     public func play( strfilename:String, vfilter:String, afilter:String ) -> Int {
-        return Int(self.wrapper.play( strfilename, vfilter, afilter ));
+        return Int(self.wrapper.play( strfilename, vfilter, afilter ))
     }
 }
 
