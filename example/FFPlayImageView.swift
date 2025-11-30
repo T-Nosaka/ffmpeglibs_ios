@@ -1,6 +1,5 @@
 //
 //  FFPlayImageView.swift
-//  example
 //
 //  Created by Takashi Nosaka on 2025/11/30.
 //
@@ -36,7 +35,7 @@ class FFPlayImageViewModel: ObservableObject {
         
         isplay = true
 
-        _ = Task.detached(priority: .userInitiated) { [weak self, isplay] in
+        _ = Task.detached(priority: .userInitiated) { [weak self] in
             
             guard let self = self else { return }
 
@@ -46,6 +45,9 @@ class FFPlayImageViewModel: ObservableObject {
 //            ffplay.setVideo(bVideo: false)
 
             ffplay.setExtCallback( onexit: {
+                let isplay = DispatchQueue.main.sync {
+                    self.isplay
+                }
                 return isplay
             },onclock: { pos, clock, pause in
                 
@@ -85,11 +87,14 @@ class FFPlayImageViewModel: ObservableObject {
                 }
                 
             },oncontrol: { control, fargs in
-    //                            control.pointee = 1
-    //                            control.advanced(by: 1).pointee = 2
-                
-    //                            fargs.pointee = 3.14159
-
+                DispatchQueue.main.sync {
+                    
+                    //                            control.pointee = 1
+                    //                            control.advanced(by: 1).pointee = 2
+                    
+                    //                            fargs.pointee = 3.14159
+                }
+                    
                 return false
             },readyaudiodevice: { channel,sample_rate in
                 return true
