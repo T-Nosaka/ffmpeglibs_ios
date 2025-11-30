@@ -81,10 +81,10 @@ void ffplayobjwrap::setExtCallback( void* ext,
                                        uint8_t r = row[x * 3];
                                        uint8_t g = row[x * 3 + 1];
                                        uint8_t b = row[x * 3 + 2];
-                                       m_pixeldata[y * width + x] = (0xFF << 24) | (r << 16) | (g << 8) | b;
+                                       m_pixeldata[y * width + x] = (0xFF<<24 | r<<16 | g<<8 | b);
                                    }
                                }
-                               upload_texture_cb( ext, width, height, format, m_pixeldata, pitch);
+                               upload_texture_cb( ext, width, height, format, m_pixeldata, width*sizeof(uint32_t));
                            },
                            [this,ext,oncontrol](ffplayobj& instance,int64_t* control, float* fargs) {
                                return oncontrol( ext, control, fargs);

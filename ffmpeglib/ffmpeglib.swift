@@ -126,7 +126,7 @@ public class Play {
     // Define callback function
     private var FFPlay_onExit: (()->Bool)? = nil
     private var FFPlay_onClock: ((Double,Double,Int32)->Void)? = nil
-    private var FFPlay_UploadTextureCb: ((Int,Int,Int,[UInt8],Int)->Void)? = nil
+    private var FFPlay_UploadTextureCb: ((Int,Int,Int,UnsafeRawPointer,Int)->Void)? = nil
     private var FFPlay_onControl: ((UnsafeMutablePointer<Int64>,UnsafeMutablePointer<Float>)->Bool)? = nil
     private var FFPlay_ReadyAudiodevice: ((Int,Int)->Bool)? = nil
     private var FFPlay_OnStartAudio: (()->Void)? = nil
@@ -139,7 +139,7 @@ public class Play {
     public func setExtCallback(
         onexit:@escaping ()->Bool,
         onclock:@escaping (_ pos:Double,_ clock:Double,_ pause:Int32)->Void,
-        upload_texture_cb:@escaping (_ width:Int,_ height:Int,_ format:Int,_ pixels:[UInt8],_ pitch:Int)->Void,
+        upload_texture_cb:@escaping (_ width:Int,_ height:Int,_ format:Int,_ pixels:UnsafeRawPointer,_ pitch:Int)->Void,
         oncontrol:@escaping (_ control: UnsafeMutablePointer<Int64>,_ fargs:UnsafeMutablePointer<Float>)->Bool,
         readyaudiodevice:@escaping (_ channel:Int, _ sample_rate:Int)->Bool,
         onstartaudio:@escaping ()->Void,
@@ -163,13 +163,8 @@ public class Play {
                 Unmanaged<Play>.fromOpaque(contextPointer!).takeUnretainedValue().FFPlay_onClock?( pos, clock, pause )
             },
             { contextPointer , width, height, format, pixelsPointer, pitch in
-                let numPixels:Int = Int(width * height)
-                var pixelArray:[UInt8] = []
-                pixelsPointer!.withMemoryRebound(to: UInt8.self, capacity: numPixels) { typedPointer in
-                    // build swift UInt8 array
-                    pixelArray = Array(UnsafeBufferPointer(start: typedPointer, count: numPixels))
-                }
-                Unmanaged<Play>.fromOpaque(contextPointer!).takeUnretainedValue().FFPlay_UploadTextureCb?(Int(width), Int(height), Int(format), pixelArray, Int(pitch))
+                guard pixelsPointer != nil else { return }
+                Unmanaged<Play>.fromOpaque(contextPointer!).takeUnretainedValue().FFPlay_UploadTextureCb?(Int(width), Int(height), Int(format), pixelsPointer!, Int(pitch))
             },
             { contextPointer, control, fargs in
                 return Unmanaged<Play>.fromOpaque(contextPointer!).takeUnretainedValue().FFPlay_onControl?( control!, fargs! ) ?? false
