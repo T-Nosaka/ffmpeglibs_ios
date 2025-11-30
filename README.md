@@ -44,6 +44,12 @@ $(PROJECT_DIR)/ffmpeglib/libsdl/output/arm64/iOS
 -lfdk-aac
 -lSDL2
 ```
+## ready build environment
+requires xcode.
+switch full xcode develop
+```
+sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer
+```
 ## libsvtav1
 ### Requires cmake 3.16
 https://cmake.org/files/v3.16/cmake-3.16.0-Darwin-x86_64.dmg
@@ -75,6 +81,9 @@ tar -xvf v2.0.3.tar.gz
 ```
 ## libsdl
 ### Requires cmake 3.24
+It appears that when multiple installations of CMake occur, they are installed into locations such as /Applications/CMake.app and /Applications/CMake 2.app.
+Since the environment changes depending on the order of installation, please adjust the CMAKE environment variable setting in scrach.sh.
+
 https://cmake.org/files/v3.24/cmake-3.24.0-macos-universal.dmg
 ### build
 ```
