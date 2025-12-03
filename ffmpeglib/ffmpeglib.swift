@@ -85,7 +85,7 @@ public class Convert {
 //
 // FFMpeg play
 //
-public class Play {
+public class Play: @unchecked Sendable {
     
     private let wrapper: ffplayobjwrap = ffplayobjwrap()
     
@@ -114,14 +114,10 @@ public class Play {
     public func setAutoexit( bAutoexit: Bool ) {
         self.wrapper.setAutoexit(bAutoexit)
     }
-    
-    public func audiocallback(stream:Data, len:Int32) {
-        var mutableStream = stream
-        mutableStream.withUnsafeMutableBytes { rawBuffer in
-            let ptr = rawBuffer.bindMemory(to: UInt8.self).baseAddress!
-            self.wrapper.audiocallback(ptr, len)
-        }
+    public func audiocallback(audiobuffer:UnsafeMutableRawPointer, len:Int32) {
+        self.wrapper.audiocallback(audiobuffer, len)
     }
+    
     
     // Define callback function
     private var FFPlay_onExit: (()->Bool)? = nil

@@ -48,7 +48,7 @@ void ffplayobjwrap::setAutoexit( bool bAutoexit ) {
     player->setAutoexit( bAutoexit);
 }
 
-void ffplayobjwrap::audiocallback(uint8_t *stream, int len) {
+void ffplayobjwrap::audiocallback(uint8_t* stream, int len) {
     player->audiocallback( stream, len);
 }
 

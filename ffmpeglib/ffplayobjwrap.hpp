@@ -44,7 +44,7 @@ public:
     void setSubTitle( bool bSubtitle );
     void setAutoexit( bool bAutoexit );
 
-    void audiocallback(uint8_t *stream, int len);
+    void audiocallback(uint8_t* stream, int len);
     
     void setExtCallback( void* ext,
                         bool (*onexit)(void*) = nullptr,
