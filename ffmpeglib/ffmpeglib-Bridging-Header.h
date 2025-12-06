@@ -5,4 +5,5 @@
 #include "run.h"
 
 #include "ffplayobjwrap.hpp"
+#include "ffparse.hpp"
 

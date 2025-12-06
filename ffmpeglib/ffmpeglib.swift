@@ -10,7 +10,7 @@ import Foundation
 //
 // define callback
 //
-typealias RunCallback = @convention(c) (
+private typealias RunCallback = @convention(c) (
     UnsafeMutableRawPointer?,
     Int32,                      // is_last_report (0=途中, 1=終了)
     Int64,                      // timer_start
@@ -66,6 +66,24 @@ public class Convert {
             )
         
         return result
+    }
+
+    //
+    // parse for take rootnode wrapper
+    //
+    private class parsewrap {
+        var rootnote:String = ""
+    }
+    
+    //
+    // ffprobe
+    //
+    public static func parse(filepath: String) -> Data {
+        let pwrap = parsewrap()
+        ffparse( filepath, Unmanaged.passUnretained(pwrap).toOpaque(), { rootnode, ext in
+            Unmanaged<parsewrap>.fromOpaque(ext!).takeUnretainedValue().rootnote = String(cString: rootnode!, encoding: .utf8)!
+        } )
+        return pwrap.rootnote.data( using: .utf8 )!
     }
 
     //
@@ -180,6 +198,9 @@ public class Play: @unchecked Sendable {
         )
     }
     
+    //
+    // play mediafile
+    //
     public func play( strfilename:String, vfilter:String, afilter:String ) -> Int {
         return Int(self.wrapper.play( strfilename, vfilter, afilter ))
     }

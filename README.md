@@ -20,6 +20,7 @@ $(PROJECT_DIR)/ffmpeglib/libsvtav1/output/arm64/iOSSim
 $(PROJECT_DIR)/ffmpeglib/dav1d/output/arm64/iOSSim
 $(PROJECT_DIR)/ffmpeglib/fdk-aac/output/arm64/iOSSim
 $(PROJECT_DIR)/ffmpeglib/libsdl/output/arm64/iOSSim
+$(PROJECT_DIR)/ffmpeglib/cJSON/output/arm64/iOSSim
 ```
 ### iPhone
 ```
@@ -28,6 +29,7 @@ $(PROJECT_DIR)/ffmpeglib/libsvtav1/output/arm64/iOS
 $(PROJECT_DIR)/ffmpeglib/dav1d/output/arm64/iOS
 $(PROJECT_DIR)/ffmpeglib/fdk-aac/output/arm64/iOS
 $(PROJECT_DIR)/ffmpeglib/libsdl/output/arm64/iOS
+$(PROJECT_DIR)/ffmpeglib/cJSON/output/arm64/iOS
 ```
 ## Additionally, specify the following link libraries.
 ### Other Linker Flags
@@ -43,6 +45,7 @@ $(PROJECT_DIR)/ffmpeglib/libsdl/output/arm64/iOS
 -lSvtAv1Enc
 -lfdk-aac
 -lSDL2
+-lcjson
 ```
 ## ready build environment
 requires xcode.
@@ -89,6 +92,14 @@ https://cmake.org/files/v3.24/cmake-3.24.0-macos-universal.dmg
 ```
 wget https://github.com/libsdl-org/SDL/releases/download/release-2.32.2/SDL2-2.32.2.tar.gz
 tar -xvf SDL2-2.32.2.tar.gz
+./iosscrach.sh
+./iossimscrach.sh
+```
+## cjson
+### build
+```
+wget https://github.com/DaveGamble/cJSON/archive/refs/tags/v1.7.18.tar.gz
+tar -xvf v1.7.18.tar.gz
 ./iosscrach.sh
 ./iossimscrach.sh
 ```

@@ -23,7 +23,6 @@
  * multimedia converter based on the FFmpeg libraries
  */
 
-
 #include "config.h"
 
 #include <errno.h>
@@ -33,8 +32,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-
-
 
 #if HAVE_IO_H
 #include <io.h>
@@ -80,11 +77,11 @@
 
 #include "libavdevice/avdevice.h"
 
-#include "fftools/cmdutils.h"
+#include "cmdutils.h"
 #include "fftools/ffmpeg.h"
-#include "fftools/ffmpeg_sched.h"
-#include "fftools/ffmpeg_utils.h"
-#include "fftools/graph/graphprint.h"
+#include "ffmpeg_sched.h"
+#include "ffmpeg_utils.h"
+#include "graph/graphprint.h"
 
 const char program_name[] = "ffmpeg";
 const int program_birth_year = 2000;
@@ -123,8 +120,6 @@ int        nb_decoders;
 static struct termios oldtty;
 static int restore_tty;
 #endif
-
-
 
 static void term_exit_sigsafe(void)
 {
@@ -989,6 +984,124 @@ void fftools_reset()
     copy_ts_first_pts = AV_NOPTS_VALUE;
 }
 
+#include "cJSON.h"
+
+#include "libavformat/internal.h"
+
+void filedump( const char *filename, cJSON* root )
+{
+    AVFormatContext *fmt_ctx = NULL;
+    if (avformat_open_input(&fmt_ctx, filename, NULL, NULL) < 0) {
+        fprintf(stderr, "Could not open source file %s\n", filename);
+        return;
+    }
+
+    if (avformat_find_stream_info(fmt_ctx, NULL) < 0) {
+        fprintf(stderr, "Could not find stream information\n");
+        avformat_close_input(&fmt_ctx);
+        return;
+    }
+
+    cJSON_AddStringToObject(root, "filename", filename);
+    cJSON_AddStringToObject(root, "format", fmt_ctx->iformat->name);
+
+    if (fmt_ctx->duration != AV_NOPTS_VALUE) {
+        int64_t duration = fmt_ctx->duration + (fmt_ctx->duration <= INT64_MAX - 5000 ? 5000 : 0);
+        cJSON_AddNumberToObject(root, "duration", duration / AV_TIME_BASE);
+    } else {
+        cJSON_AddStringToObject(root, "duration", "N/A");
+    }
+
+    if (fmt_ctx->start_time != AV_NOPTS_VALUE) {
+        cJSON_AddNumberToObject(root, "start_time", fmt_ctx->start_time / AV_TIME_BASE);
+    } else {
+        cJSON_AddStringToObject(root, "start_time", "N/A");
+    }
+
+    // メタデータをJSONに追加
+    {
+        AVDictionaryEntry *tag = NULL;
+        cJSON* metadata_json = cJSON_CreateObject();
+
+        while ((tag = av_dict_get(fmt_ctx->metadata, "", tag, AV_DICT_IGNORE_SUFFIX))) {
+            cJSON_AddStringToObject(metadata_json, tag->key, tag->value);
+        }
+
+        cJSON_AddItemToObject(root, "metadata", metadata_json);
+    }
+
+    cJSON* streams = cJSON_CreateArray();
+    for (unsigned int i = 0; i < fmt_ctx->nb_streams; i++) {
+        AVStream *st = fmt_ctx->streams[i];
+        AVCodecParameters *par = st->codecpar;
+        const AVCodecDescriptor *cd = avcodec_descriptor_get(par->codec_id);
+        if (!cd)
+            cd = avcodec_descriptor_get(AV_CODEC_ID_NONE);
+
+        cJSON* stream = cJSON_CreateObject();
+        cJSON_AddNumberToObject(stream, "index", i);
+        cJSON_AddNumberToObject(stream, "id", st->id);
+        cJSON_AddNumberToObject(stream, "type", st->codecpar->codec_type);
+        if(cd)
+            cJSON_AddStringToObject(stream, "codec", cd->name);
+        cJSON_AddNumberToObject(stream, "codecid", par->codec_id);
+        cJSON_AddNumberToObject(stream, "bit_rate", (par->bit_rate) / (int64_t)(1000));
+
+        // コーデック詳細情報取得
+        {
+            const FFStream *const sti = cffstream(st);
+            const char *separator = fmt_ctx->dump_separator;
+            AVCodecContext *avctx = avcodec_alloc_context3(NULL);
+            if (!avctx)
+                return;
+
+            int ret = avcodec_parameters_to_context(avctx, st->codecpar);
+            if (ret < 0) {
+                avcodec_free_context(&avctx);
+                return;
+            }
+
+            // Fields which are missing from AVCodecParameters need to be taken from the AVCodecContext
+            if (sti->avctx) {
+                avctx->properties   = sti->avctx->properties;
+                avctx->codec        = sti->avctx->codec;
+                avctx->qmin         = sti->avctx->qmin;
+                avctx->qmax         = sti->avctx->qmax;
+                avctx->coded_width  = sti->avctx->coded_width;
+                avctx->coded_height = sti->avctx->coded_height;
+            }
+
+            if (separator)
+                av_opt_set(avctx, "dump_separator", separator, 0);
+
+            char buf[1025];
+            avcodec_string(buf, sizeof(buf)-1, avctx, 0);
+            cJSON_AddStringToObject(stream, "detail", buf);
+            avcodec_free_context(&avctx);
+        }
+
+        // ビデオストリームの場合、ピクセルフォーマット、解像度、フレームレートなどを追加
+        if (par->codec_type == AVMEDIA_TYPE_VIDEO) {
+
+            cJSON_AddNumberToObject(stream, "width", par->width);
+            cJSON_AddNumberToObject(stream, "height", par->height);
+            cJSON_AddNumberToObject(stream, "frame_rate", av_q2d(st->avg_frame_rate));
+            cJSON_AddNumberToObject(stream, "tbr", av_q2d(st->r_frame_rate));
+            cJSON_AddNumberToObject(stream, "tbn", st->time_base.den);
+        }
+
+        // オーディオストリームの場合、チャンネル数とサンプリングレートを追加
+        if (par->codec_type == AVMEDIA_TYPE_AUDIO) {
+            cJSON_AddNumberToObject(stream, "channels", par->ch_layout.nb_channels);
+            cJSON_AddNumberToObject(stream, "sample_rate", par->sample_rate);
+        }
+
+        cJSON_AddItemToArray(streams, stream);
+    }
+    cJSON_AddItemToObject(root, "streams", streams);
+
+    avformat_close_input(&fmt_ctx);
+}
 
 
 int run(int argc, char **argv, void* pext, int (*callback)(void* pext, int is_last_report, int64_t timer_start, int64_t cur_time, int64_t pts))

@@ -266,12 +266,14 @@
 					"$(PROJECT_DIR)/ffmpeglib/../ffmpeg/output/arm64/iOS/fftools/**",
 					"$(PROJECT_DIR)/ffmpeglib/../ffmpeg/output/arm64/iOS/compat/stdbit",
 					"$(PROJECT_DIR)/ffmpeglib/../libsdl/output/arm64/iOS/include",
+					"$(PROJECT_DIR)/ffmpeglib/../cJSON/output/arm64/iOS",
 				);
 				"HEADER_SEARCH_PATHS[sdk=iphonesimulator*]" = (
 					"$(PROJECT_DIR)/ffmpeglib/../ffmpeg/output/arm64/iOSSim",
 					"$(PROJECT_DIR)/ffmpeglib/../ffmpeg/output/arm64/iOSSim/fftools/**",
 					"$(PROJECT_DIR)/ffmpeglib/../ffmpeg/output/arm64/iOSSim/compat/stdbit",
 					"$(PROJECT_DIR)/ffmpeglib/../libsdl/output/arm64/iOSSim/include",
+					"$(PROJECT_DIR)/ffmpeglib/../cJSON/output/arm64/iOSSim",
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -316,6 +318,7 @@
 					"$(PROJECT_DIR)/ffmpeglib/../ffmpeg/output/arm64/iOS/fftools/**",
 					"$(PROJECT_DIR)/ffmpeglib/../ffmpeg/output/arm64/iOS/compat/stdbit",
 					"$(PROJECT_DIR)/ffmpeglib/../libsdl/output/arm64/iOS/include",
+					"$(PROJECT_DIR)/ffmpeglib/../cJSON/output/arm64/iOS",
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
