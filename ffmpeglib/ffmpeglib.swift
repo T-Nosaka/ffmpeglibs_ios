@@ -78,12 +78,12 @@ public class Convert {
     //
     // ffprobe
     //
-    public static func parse(filepath: String) -> Data {
+    public static func parse(filepath: String) -> [String: Any] {
         let pwrap = parsewrap()
         ffparse( filepath, Unmanaged.passUnretained(pwrap).toOpaque(), { rootnode, ext in
             Unmanaged<parsewrap>.fromOpaque(ext!).takeUnretainedValue().rootnote = String(cString: rootnode!, encoding: .utf8)!
         } )
-        return pwrap.rootnote.data( using: .utf8 )!
+        return (try? JSONSerialization.jsonObject(with:pwrap.rootnote.data( using: .utf8 )!) as? [String: Any])!
     }
 
     //
