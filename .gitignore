@@ -124,3 +124,6 @@ fdk-aac/output/
 libsdl/SDL2-*
 libsdl/makegenerate/
 libsdl/output/
+cJSON/cJSON-*
+cJSON/makegenerate/
+cJSON/output/
