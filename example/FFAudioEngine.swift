@@ -143,7 +143,9 @@ actor FFAudioEngine {
 
         // サンプリングバッファセット
         playerNode.scheduleBuffer(audioBuffer) { [self] in
-            self.requestNextBuffer()
+            Task{
+                await self.requestNextBuffer()
+            }
         }
     }
    
@@ -158,6 +160,6 @@ actor FFAudioEngine {
         
         isFinished = true
 
-        playerNode.stop()
+        self.playerNode.stop()
     }
 }

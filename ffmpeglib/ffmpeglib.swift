@@ -117,6 +117,12 @@ public class Play: @unchecked Sendable {
     // Destruct
     //
     deinit {
+    }
+
+    //
+    // free
+    //
+    public func end() {
         ffplayobjwrap.Delete(self.wrapper)
     }
     

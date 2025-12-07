@@ -25,7 +25,10 @@ class FFPlayMetalViewModel: ObservableObject {
     //
     @Published var isplay : Bool = false
     @Published var reqpause : Bool = false
-
+    // シーク要求
+    private var reqseek : Bool = false
+    private var nowseek:Double = 0.0
+    
     //
     // メディア情報
     //
@@ -45,6 +48,14 @@ class FFPlayMetalViewModel: ObservableObject {
         let mediainfo = ffmpeglib.Convert.parse(filepath: filepath.path)
         format = mediainfo["format"] as! String
         duration = .seconds( (mediainfo["duration"] as? Double)! )
+    }
+
+    //
+    // シーク要求
+    //
+    func reqseek(_ nowtime:Double ) {
+        nowseek = nowtime
+        reqseek = true
     }
     
     ///
@@ -79,22 +90,24 @@ class FFPlayMetalViewModel: ObservableObject {
             await self.probe( filepath )
             
             let ffplay = ffmpeglib.Play()
-
+            
             //音源開始
             let audioengine: FFAudioEngine = FFAudioEngine(play: ffplay)
-
-//            ffplay.setAudio(bAudio: false)
-//            ffplay.setVideo(bVideo: false)
-
+            
+            //            ffplay.setAudio(bAudio: false)
+            //            ffplay.setVideo(bVideo: false)
+            
             ffplay.setExtCallback( onexit: {
-                let isplay = DispatchQueue.main.sync {
+                return DispatchQueue.main.sync {
                     self.isplay
                 }
-                return isplay
             },onclock: { pos, clock, pause in
                 DispatchQueue.main.async {
                     self.position = pos
                     guard !clock.isNaN else {
+                        return
+                    }
+                    guard Int64(clock) < self.duration.components.seconds else {
                         return
                     }
                     self.now = .seconds(clock)
@@ -117,46 +130,56 @@ class FFPlayMetalViewModel: ObservableObject {
                     }
                     return false
                 }
-                if( reqpause == true) {
+                if( reqpause) {
                     control.advanced(by: 2).pointee = 1
                     result = true
                 }
-/*
-                DispatchQueue.main.sync {
-                    
-                    //                            control.pointee = 1
-                    //                            control.advanced(by: 1).pointee = 2
-                    
-                    //                            fargs.pointee = 3.14159
+                
+                var nowseek = 0.0
+                let reqseek = DispatchQueue.main.sync {
+                    if( self.reqseek ) {
+                        self.reqseek = false
+                        nowseek=self.nowseek
+                        return true
+                    }
+                    return false
                 }
-*/
+                if(reqseek) {
+                    control.pointee = 1
+                    fargs.pointee = Float(nowseek)
+                    result = true
+                }
                 return result
             },readyaudiodevice: { [audioengine ] channel,sample_rate in
-                
-                DispatchQueue.main.async {
-                    audioengine.prepare(channels: channel, sampleRate: sample_rate)
+                Task {
+                    await audioengine.prepare(channels: channel, sampleRate: sample_rate)
                 }
-                
                 return true
             },onstartaudio: {
-                DispatchQueue.main.async {
-                    audioengine.start()
+                Task {
+                    await audioengine.start()
                 }
             },onstopaudio: {
-                DispatchQueue.main.async {
-                    audioengine.stop()
+                Task {
+                    await audioengine.stop()
                 }
             },update_subtile_cb: {
             })
             
-            _ = ffplay.play(strfilename: filepath.path, vfilter: "", afilter: "")
-            
-            DispatchQueue.main.sync {
-                audioengine.dealloc()
-            }
-            
-            DispatchQueue.main.sync {
-                self.isplay = false
+            do {
+                _ = ffplay.play(strfilename: filepath.path, vfilter: "", afilter: "")
+                
+                defer {
+                    Task {
+                        await audioengine.dealloc()
+                    }
+                    
+                    ffplay.end()
+                    
+                    DispatchQueue.main.sync {
+                        self.isplay = false
+                    }
+                }
             }
         }
     }
