@@ -5,6 +5,8 @@
 //  Created by Takashi Nosaka on 2025/12/06.
 //
 
+#include<stdlib.h>
+
 #include "ffparse.hpp"
 
 #include "cJSON.h"

@@ -87,6 +87,18 @@ void ffplayobjwrap::setExtCallback( void* ext,
                                upload_texture_cb( ext, width, height, format, m_pixeldata, width*sizeof(uint32_t));
                            },
                            [this,ext,oncontrol](ffplayobj& instance,int64_t* control, float* fargs) {
+                               //req seek
+                               control[0]=0;
+                               //none
+                               control[1]=0;
+                               //req pause
+                               control[2]=0;
+                               //step value
+                               control[3]=0;
+                               //step maxvalue
+                               control[4]=0;
+                               //seek value
+                               fargs[0]=0;
                                return oncontrol( ext, control, fargs);
                            },
                            [this,ext,readyaudiodevice]( ffplayobj& instance, int channel, int sample_rate ){

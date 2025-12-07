@@ -18,26 +18,48 @@ class FFPlayImageViewModel: ObservableObject {
     // 再生状態と制御
     //
     @Published var isplay : Bool = false
+    @Published var reqpause : Bool = false
     
     //
     // 映像
     //
     @Published var image : CGImage? = nil
+
+    //
+    // メディア情報
+    //
+    @Published var format = "unknown"
+    @Published var duration = Duration(attoseconds: 0)
+
+    //
+    // 現在値
+    //
+    @Published var position:Double = 0.0
+    @Published var now:Duration = .seconds(0)
+    
+    //
+    // メディア情報取得
+    //
+    private func probe(_ filepath: URL ) {
+        let mediainfo = ffmpeglib.Convert.parse(filepath: filepath.path)
+        format = mediainfo["format"] as! String
+        duration = .seconds( (mediainfo["duration"] as? Double)! )
+    }
     
     ///
     /// 再生
     ///
     func play( filepath: URL ) {
+        guard self.isplay == false else {return}
         
-        if( isplay == true ) {
-            isplay = false
-        }
-        
-        isplay = true
+        self.isplay = true
+        self.reqpause = false
 
         _ = Task.detached(priority: .userInitiated) { [weak self] in
             guard let self = self else { return }
 
+            await self.probe( filepath )
+            
             let colorSpace = CGColorSpaceCreateDeviceRGB()
             let bitmapInfo: CGBitmapInfo = [
                 .byteOrder32Little,
@@ -67,9 +89,13 @@ class FFPlayImageViewModel: ObservableObject {
                 }
                 return isplay
             },onclock: { pos, clock, pause in
-                
-                print( "\(pos),\(clock)" )
-                
+                DispatchQueue.main.async {
+                    self.position = pos
+                    guard !clock.isNaN else {
+                        return
+                    }
+                    self.now = .seconds(clock)
+                }
             },upload_texture_cb: { width, height, format, pixelsPointer, pitch in
 
                 let size = height * pitch
@@ -90,20 +116,37 @@ class FFPlayImageViewModel: ObservableObject {
                     intent: .defaultIntent
                 )
                 
-                Task { @MainActor in
+                DispatchQueue.main.async {
                     self.image = img
                 }
 
             },oncontrol: { control, fargs in
+                
+                var result = false
+                
+                //pause
+                let reqpause = DispatchQueue.main.sync {
+                    if( self.reqpause ) {
+                        self.reqpause = false
+                        return true
+                    }
+                    return false
+                }
+                if( reqpause == true) {
+                    control.advanced(by: 2).pointee = 1
+                    result = true
+                }
+/*
                 DispatchQueue.main.sync {
+                    self.reqpause = false
                     
                     //                            control.pointee = 1
                     //                            control.advanced(by: 1).pointee = 2
                     
                     //                            fargs.pointee = 3.14159
                 }
-                    
-                return false
+*/
+                return result
             },readyaudiodevice: { [audioengine ] channel,sample_rate in
                 
                 DispatchQueue.main.async {
@@ -124,7 +167,13 @@ class FFPlayImageViewModel: ObservableObject {
             
             _ = ffplay.play(strfilename: filepath.path, vfilter: "", afilter: "")
             
-            await audioengine.dealloc()
+            DispatchQueue.main.sync {
+                audioengine.dealloc()
+            }
+            
+            DispatchQueue.main.sync {
+                self.isplay = false
+            }
         }
     }
 }

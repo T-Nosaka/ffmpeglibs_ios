@@ -47,6 +47,12 @@ actor FFAudioEngine {
     /// リソース破棄
     ///
     func dealloc() {
+        
+        lock.lock()
+        defer {
+            lock.unlock()
+        }
+        
         buffer1?.deallocate()
         buffer2?.deallocate()
     }
@@ -55,6 +61,11 @@ actor FFAudioEngine {
     /// デバイス準備
     ///
     func prepare( channels: Int, sampleRate: Int) {
+        
+        lock.lock()
+        defer {
+            lock.unlock()
+        }
         
         audioFormat = AVAudioFormat(commonFormat: .pcmFormatInt16,
                                     sampleRate: Double(sampleRate),
@@ -89,13 +100,11 @@ actor FFAudioEngine {
     /// 次回バッファ要求
     ///
     private func requestNextBuffer() {
+        guard !self.isFinished else {return}
+        
         lock.lock()
         defer {
             lock.unlock()
-        }
-        
-        if( self.isFinished ) {
-            return
         }
         
         let targetBuffer = currentBuffer == 1 ? buffer1! : buffer2!
@@ -146,6 +155,7 @@ actor FFAudioEngine {
         defer {
             lock.unlock()
         }
+        
         isFinished = true
 
         playerNode.stop()
