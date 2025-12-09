@@ -195,3 +195,31 @@ let convresult = conv.go(args: args) { start, cur, pts in
     let ret = ffplay.play(strfilename: fileURL.path, vfilter: "", afilter: "")
 
 ```
+## ⚠️ License Notice
+
+This project, `ffmpeglibs_ios`, is structured with dual licensing due to the inclusion of source code derived from FFmpeg's `fftools`.
+
+### 1. General Project License (MIT)
+
+The majority of the project, including build scripts, configuration files, and custom Objective-C/Swift wrapper code, is licensed under the **MIT License**. This allows users maximum freedom for usage, modification, and redistribution.
+
+---
+
+### 2. GNU General Public License (GPL) Portion
+
+The source files located within the `ffmpeglib` directory, which are either direct copies or modifications of source code from FFmpeg's `fftools` (such as files related to `ffplay`), are licensed under the **GNU General Public License (GPL) version 2.1 or later**.
+
+#### User Obligations:
+
+If you utilize these GPL-licensed files in your application:
+
+* **Your application may become subject to the GPL's requirements.**
+* The GPL is a strong copyleft license, meaning you may be obligated to provide the source code of your derived work (your application) to end-users upon request.
+* The necessary GPL-2.0 license text can be found in the `COPYING` file in this repository.
+
+---
+
+### 3. Disclaimer and Responsibility
+
+* **By using this project, you acknowledge and agree that legal compliance (including adherence to the GPL) is solely your responsibility.**
+* The project maintainer makes no warranty regarding the legal implications of distributing applications built using this repository. Please consult legal counsel if you have concerns about distributing GPL-licensed binaries.
