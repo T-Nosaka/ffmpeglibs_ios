@@ -43,7 +43,7 @@ class FFPlayImageViewModel: ObservableObject {
     //
     // メディア情報取得
     //
-    private func probe(_ filepath: URL ) {
+    func probe(_ filepath: URL ) {
         let mediainfo = ffmpeglib.Convert.parse(filepath: filepath.path)
         format = mediainfo["format"] as! String
         duration = .seconds( (mediainfo["duration"] as? Double)! )
