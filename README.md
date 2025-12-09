@@ -195,6 +195,72 @@ let convresult = conv.go(args: args) { start, cur, pts in
     let ret = ffplay.play(strfilename: fileURL.path, vfilter: "", afilter: "")
 
 ```
+# example SwiftUI
+```
+struct VideoListView : View {
+    @ObservedObject var ffplaymodel: FFPlayMetalViewModel = FFPlayMetalViewModel()
+    @ObservedObject var ttm:TimeTruckModel = TimeTruckModel(initialValue: 30.0, range: 0.0...360.0 )
+
+    fileurl:String="test.mp4"
+
+    init() {
+        //playing event
+        ffplaymodel.$now
+            .sink { [ttm] newValue in
+                guard ttm.isDragging==false else {return}
+                //Duration to Double
+                let v = Double(newValue.components.seconds) + (Double(newValue.components.attoseconds)/1000000000000000000.0)
+                ttm.value = Float(v)
+            }
+            .store( in: &cancellables )
+        //change slider event
+        ttm.$value
+            .sink { [ttm,ffplaymodel] newValue in
+                guard ttm.isDragging==true else {return}
+                ffplaymodel.reqseek(Double(newValue))
+            }
+            .store( in: &cancellables )
+    }
+    var body : some View {
+        VStack {
+            FFPlayMetalView(vm:ffplaymodel)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            if( ffplaymodel.isplay == true ) {
+                if ( ffplaymodel.duration.components.seconds > 0 ) {
+                    TimeTruckSliderView(model: ttm)
+                                    .padding()
+                                    .border(Color.gray)
+                }
+            }
+            VStack {
+                Text( ffplaymodel.format )
+                Text( ffplaymodel.duration.formatted(.units(allowed: [.days, .hours, .minutes, .seconds, .milliseconds], width: .abbreviated)))
+                Text( ffplaymodel.now.formatted(.units(allowed: [.days, .hours, .minutes, .seconds, .milliseconds], width: .abbreviated)) )
+            }
+            .padding(.horizontal)
+            //pause
+            Button("pause") {
+                ffplaymodel.reqpause = true
+            }
+            //stop
+            if( ffplaymodel.isplay == true ) {
+                Button("stop") {
+                    ffplaymodel.isplay = false
+                }
+            }
+            Button("start") {
+                guard ffplaymodel.isplay == false else {return}
+                ffplaymodel.probe(fileurl)
+                ttm.value=0
+                let mediaend = Double(ffplaymodel.duration.components.seconds) + (Double(ffplaymodel.duration.components.attoseconds)/1000000000000000000.0)
+                ttm.valueRange = 0.0...Float(mediaend)
+                
+                ffplaymodel.play(filepath: fileurl)
+            }
+        }
+    }
+}
+```
 ## ⚠️ License Notice
 
 This project, `ffmpeglibs_ios`, is structured with dual licensing due to the inclusion of source code derived from FFmpeg's `fftools`.
