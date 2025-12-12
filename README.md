@@ -17,6 +17,7 @@ $(PROJECT_DIR)/ffmpeglib/ffmpeg/output/arm64/iOS/fftools
 ```
 $(PROJECT_DIR)/ffmpeglib/ffmpeg/output/arm64/iOSSim
 $(PROJECT_DIR)/ffmpeglib/libsvtav1/output/arm64/iOSSim
+$(PROJECT_DIR)/ffmpeglib/vvenc/output/arm64/iOSSim
 $(PROJECT_DIR)/ffmpeglib/dav1d/output/arm64/iOSSim
 $(PROJECT_DIR)/ffmpeglib/fdk-aac/output/arm64/iOSSim
 $(PROJECT_DIR)/ffmpeglib/libsdl/output/arm64/iOSSim
@@ -26,6 +27,7 @@ $(PROJECT_DIR)/ffmpeglib/cJSON/output/arm64/iOSSim
 ```
 $(PROJECT_DIR)/ffmpeglib/ffmpeg/output/arm64/iOS
 $(PROJECT_DIR)/ffmpeglib/libsvtav1/output/arm64/iOS
+$(PROJECT_DIR)/ffmpeglib/vvenc/output/arm64/iOS
 $(PROJECT_DIR)/ffmpeglib/dav1d/output/arm64/iOS
 $(PROJECT_DIR)/ffmpeglib/fdk-aac/output/arm64/iOS
 $(PROJECT_DIR)/ffmpeglib/libsdl/output/arm64/iOS
@@ -43,6 +45,7 @@ $(PROJECT_DIR)/ffmpeglib/cJSON/output/arm64/iOS
 -lavdevice
 -ldav1d
 -lSvtAv1Enc
+-lvvenc
 -lfdk-aac
 -lSDL2
 -lcjson
@@ -92,6 +95,14 @@ https://cmake.org/files/v3.24/cmake-3.24.0-macos-universal.dmg
 ```
 wget https://github.com/libsdl-org/SDL/releases/download/release-2.32.2/SDL2-2.32.2.tar.gz
 tar -xvf SDL2-2.32.2.tar.gz
+./iosscrach.sh
+./iossimscrach.sh
+```
+## vvenc
+### build
+```
+wget https://github.com/fraunhoferhhi/vvenc/archive/refs/tags/v1.13.1.tar.gz
+tar -xvf v1.13.1.tar.gz
 ./iosscrach.sh
 ./iossimscrach.sh
 ```
