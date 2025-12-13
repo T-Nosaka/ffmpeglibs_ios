@@ -16,6 +16,7 @@ $(PROJECT_DIR)/ffmpeglib/ffmpeg/output/arm64/iOS/fftools
 ### iPhone Simulater
 ```
 $(PROJECT_DIR)/ffmpeglib/ffmpeg/output/arm64/iOSSim
+$(PROJECT_DIR)/ffmpeglib/libx264/output/arm64/iOSSim
 $(PROJECT_DIR)/ffmpeglib/libsvtav1/output/arm64/iOSSim
 $(PROJECT_DIR)/ffmpeglib/vvenc/output/arm64/iOSSim
 $(PROJECT_DIR)/ffmpeglib/dav1d/output/arm64/iOSSim
@@ -26,6 +27,7 @@ $(PROJECT_DIR)/ffmpeglib/cJSON/output/arm64/iOSSim
 ### iPhone
 ```
 $(PROJECT_DIR)/ffmpeglib/ffmpeg/output/arm64/iOS
+$(PROJECT_DIR)/ffmpeglib/libx264/output/arm64/iOS
 $(PROJECT_DIR)/ffmpeglib/libsvtav1/output/arm64/iOS
 $(PROJECT_DIR)/ffmpeglib/vvenc/output/arm64/iOS
 $(PROJECT_DIR)/ffmpeglib/dav1d/output/arm64/iOS
@@ -44,6 +46,7 @@ $(PROJECT_DIR)/ffmpeglib/cJSON/output/arm64/iOS
 -lavfilter
 -lavdevice
 -ldav1d
+-lx264
 -lSvtAv1Enc
 -lvvenc
 -lfdk-aac
@@ -105,6 +108,13 @@ wget https://github.com/fraunhoferhhi/vvenc/archive/refs/tags/v1.13.1.tar.gz
 tar -xvf v1.13.1.tar.gz
 ./iosscrach.sh
 ./iossimscrach.sh
+```
+## libx264
+### build
+```
+wget https://code.videolan.org/videolan/x264/-/archive/stable/x264-stable.tar.gz
+tar -xvf x264-stable.tar.gz
+./scrach.sh
 ```
 ## cjson
 ### build

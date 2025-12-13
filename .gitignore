@@ -130,3 +130,5 @@ cJSON/output/
 vvenc/vvenc-*
 vvenc/makegenerate/
 vvenc/output/
+libx264/x264-*
+libx264/output/

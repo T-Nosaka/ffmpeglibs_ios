@@ -37,6 +37,7 @@ make_ios() {
   #Library paths
   export C_INCLUDE_PATH=""
   export C_INCLUDE_PATH=${C_INCLUDE_PATH}:${SRCFOLDER}/../fdk-aac/output/${ARCH}/${OUTTYPE}
+  export C_INCLUDE_PATH=${C_INCLUDE_PATH}:${SRCFOLDER}/../libx264/output/${ARCH}/${OUTTYPE}
   export C_INCLUDE_PATH=${C_INCLUDE_PATH}:${SRCFOLDER}/../libsvtav1/output/${ARCH}/${OUTTYPE}
   export C_INCLUDE_PATH=${C_INCLUDE_PATH}:${SRCFOLDER}/../dav1d/output/${ARCH}/${OUTTYPE}/include
   export C_INCLUDE_PATH=${C_INCLUDE_PATH}:${SRCFOLDER}/../vvenc/output/${ARCH}/${OUTTYPE}/include
@@ -44,12 +45,14 @@ make_ios() {
   #for configure test module
   export LDFLAGS=${LDFLAGS}" -lstdc++"
   export LDFLAGS=${LDFLAGS}" -L"${SRCFOLDER}/../fdk-aac/output/${ARCH}/${OUTTYPE}
+  export LDFLAGS=${LDFLAGS}" -L"${SRCFOLDER}/../libx264/output/${ARCH}/${OUTTYPE}
   export LDFLAGS=${LDFLAGS}" -L"${SRCFOLDER}/../libsvtav1/output/${ARCH}/${OUTTYPE}
   export LDFLAGS=${LDFLAGS}" -L"${SRCFOLDER}/../dav1d/output/${ARCH}/${OUTTYPE}
   export LDFLAGS=${LDFLAGS}" -L"${SRCFOLDER}/../vvenc/output/${ARCH}/${OUTTYPE}
 
   EXTCODEC='--enable-libfdk-aac
           --enable-libdav1d
+          --enable-libx264
           --enable-libsvtav1
           --enable-libvvenc'
 
