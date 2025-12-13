@@ -132,3 +132,6 @@ vvenc/makegenerate/
 vvenc/output/
 libx264/x264-*
 libx264/output/
+libx265/x265-*
+libx265/output/
+libx265/makegenerate/
