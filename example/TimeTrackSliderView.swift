@@ -41,7 +41,14 @@ class TimeTruckModel: ObservableObject {
     ///
     @Published var valueRange: ClosedRange<Float> = 0.0...0.0
     
-    /// Viewの幅 (ピクセル)。GeometryReaderから設定される
+    ///
+    /// スケール範囲
+    ///
+    var scaleRange: ClosedRange<Float> = 0.01...20.0
+    
+    ///
+    /// View幅 設定
+    ///
     var boxWidthPx: Float = 0.0 {
         didSet {
             // boxWidthPxが設定されたら、適切な初期スケールを計算する
@@ -49,9 +56,8 @@ class TimeTruckModel: ObservableObject {
                 // 初期スケールを、全幅の1/3が表示される程度に調整
                 let totalDuration = valueRange.upperBound - valueRange.lowerBound
                 let initialScale = (boxWidthPx ) / totalDuration
-                //TODO 値域修正
-                //scale = initialScale
-                scale = 1.0
+                //値域修正
+                scale = max(scaleRange.lowerBound, min(initialScale, scaleRange.upperBound))
             }
         }
     }
@@ -61,7 +67,9 @@ class TimeTruckModel: ObservableObject {
     ///
     private var startDragValue: Float = 0.0
     
-    // ピンチジェスチャー開始時の状態
+    ///
+    /// ピンチジェスチャー開始時の状態
+    ///
     var startPinchScale: Float?
 
     ///
@@ -80,8 +88,6 @@ class TimeTruckModel: ObservableObject {
         
         self.isDragging = true
         self.startDragValue = self.value
-        
-//        print("handlePanStart: \(translation)")
     }
     
     ///
@@ -99,8 +105,6 @@ class TimeTruckModel: ObservableObject {
         
         // 状態を更新
         self.value = newValue
-        
-//        print("handlePanChanged: \(translation.width)")
     }
     
     ///
@@ -110,29 +114,29 @@ class TimeTruckModel: ObservableObject {
         self.isDragging = false
     }
     
-    /// タイムラインのズーム（拡大・縮小）開始時の処理
+    ///
+    /// タイムラインのズーム開始
+    ///
     func handleZoomStart() {
         self.startPinchScale = self.scale
     }
     
-    /// タイムラインのズーム（拡大・縮小）中の処理
+    ///
+    /// タイムラインのズーム中
+    ///
     func handleZoomChanged(magnification: CGFloat) {
-        guard let startScale = startPinchScale else { return }
-        
-        // 拡大率の感度を調整
-        let sensitivity: Float = 0.5
+        let startScale = self.startPinchScale!
         
         // 新しいスケールを計算
-        var newScale = startScale * Float(magnification) * sensitivity
+        let newScale = startScale * Float(magnification)
         
-        // 最小幅のチェック (Composeコードのロジックを参考に、View幅の30%を最小表示幅とする)
-        let totalDuration = valueRange.upperBound - valueRange.lowerBound
-        let minScale = (boxWidthPx ) / totalDuration
-        
-        self.scale = newScale
+        //値域修正
+        self.scale = max(scaleRange.lowerBound, min(newScale, scaleRange.upperBound))
     }
     
-    /// タイムラインのズーム（拡大・縮小）終了時の処理
+    ///
+    /// タイムラインのズーム終了
+    ///
     func handleZoomEnd() {
         self.startPinchScale = nil
     }
@@ -175,13 +179,8 @@ struct TimeTruckSliderView: View {
 
                 // 再生位置に応じてトラックを移動させるためのオフセットを計算
                 let offsetPx = model.value * model.scale
-//                print("offsetPx=\(offsetPx) model.value=\(model.value) model.scale=\(model.scale)")
-                
                 let trackStartX = centerX - model.valueRange.lowerBound * model.scale - offsetPx
                 let trackEndX = centerX + model.valueRange.upperBound * model.scale - offsetPx
-
-//                print("model.valueRange.lowerBound=\(model.valueRange.lowerBound) model.valueRange.upperBound=\(model.valueRange.upperBound)")
-//                print("trackStartX=\(trackStartX) offsetPx=\(offsetPx) trackEndX=\(trackEndX)")
 
                 // 水平トラック背景線
                 var path = Path()
@@ -238,7 +237,7 @@ struct TimeTruckSliderView: View {
         
         let markerColor = Color(uiColor: .systemGray)
         
-        // 1. 分/10分単位の目盛り (長い目盛り)
+        // 分/10分単位の目盛り (長い目盛り)
         var lstep: Int = 60 // 1分
         if currentScale < 0.4 {
             lstep = 60 * 10 // 10分
@@ -259,7 +258,7 @@ struct TimeTruckSliderView: View {
             context.stroke(markerPath, with: .color(markerColor), lineWidth: lineThicknessPx)
         }
         
-        // 2. 1秒単位の目盛り (短い目盛り) - ズームイン時のみ表示
+        // 1秒単位の目盛り (短い目盛り) - ズームイン時のみ表示
         if currentScale > 6.0 {
             let secTopY = centerY - centerYtoB * 0.25
             
@@ -280,9 +279,9 @@ struct TimeTruckSliderView: View {
         }
     }
     
-    // MARK: - Gestures
-    
-    /// 1本指でのドラッグ（パン）ジェスチャー
+    ///
+    /// ドラッグジェスチャー
+    ///
     var panGesture: some Gesture {
         DragGesture(minimumDistance: 5, coordinateSpace: .local)
             .onChanged { value in
@@ -297,7 +296,9 @@ struct TimeTruckSliderView: View {
             }
     }
     
-    /// 2本指でのズーム（拡大・縮小）ジェスチャー
+    ///
+    /// ズームジェスチャー
+    ///
     var zoomGesture: some Gesture {
         MagnifyGesture()
             .onChanged { value in
