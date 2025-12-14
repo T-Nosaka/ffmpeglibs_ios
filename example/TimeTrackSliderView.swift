@@ -34,17 +34,17 @@ class TimeTruckModel: ObservableObject {
     ///
     /// ドラッグ中判定
     ///
-    @Published var isDragging: Bool = false
+    var isDragging: Bool = false
     
     ///
     /// 時間範囲 (秒)
     ///
-    @Published var valueRange: ClosedRange<Float> = 0.0...0.0
+    var valueRange: ClosedRange<Float> = 0.0...0.0
     
     ///
     /// スケール範囲
     ///
-    var scaleRange: ClosedRange<Float> = 0.01...20.0
+    private var scaleRange: ClosedRange<Float> = 0.01...20.0
     
     ///
     /// View幅 設定
@@ -53,7 +53,7 @@ class TimeTruckModel: ObservableObject {
         didSet {
             // boxWidthPxが設定されたら、適切な初期スケールを計算する
             if boxWidthPx > 0 {
-                // 初期スケールを、全幅の1/3が表示される程度に調整
+                // 初期スケール
                 let totalDuration = valueRange.upperBound - valueRange.lowerBound
                 let initialScale = (boxWidthPx ) / totalDuration
                 //値域修正
@@ -75,9 +75,8 @@ class TimeTruckModel: ObservableObject {
     ///
     /// コンストラクタ
     ///
-    init(initialValue: Float, range: ClosedRange<Float> ) {
-        self.value = initialValue
-        self.valueRange = range
+    public init( ) {
+        self.value = 0
     }
     
     ///

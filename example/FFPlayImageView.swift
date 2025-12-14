@@ -33,7 +33,9 @@ class FFPlayImageViewModel: ObservableObject {
     //
     @Published var format = "unknown"
     @Published var duration = Duration(attoseconds: 0)
-
+    @Published var width = 0
+    @Published var height = 0
+    
     //
     // 現在値
     //
@@ -44,9 +46,20 @@ class FFPlayImageViewModel: ObservableObject {
     // メディア情報取得
     //
     func probe(_ filepath: URL ) {
-        let mediainfo = ffmpeglib.Convert.parse(filepath: filepath.path)
-        format = mediainfo["format"] as! String
-        duration = .seconds( (mediainfo["duration"] as? Double)! )
+        let fp = ffmpeglib.ffprobe()
+        fp.probe(filepath)
+        
+        format = fp.format
+        duration = .seconds( fp.duration )
+
+        var vfind = false
+        for stream in fp.streams {
+            if ( vfind == false && stream.type == .video) {
+                self.width = stream.width
+                self.height = stream.height
+                vfind = true
+            }
+        }
     }
 
     //

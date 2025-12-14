@@ -231,7 +231,7 @@ let convresult = conv.go(args: args) { start, cur, pts in
 ```
 struct VideoListView : View {
     @ObservedObject var ffplaymodel: FFPlayMetalViewModel = FFPlayMetalViewModel()
-    @ObservedObject var ttm:TimeTruckModel = TimeTruckModel(initialValue: 30.0, range: 0.0...360.0 )
+    @ObservedObject var ttm:TimeTruckModel = TimeTruckModel()
 
     fileurl:String="test.mp4"
 
@@ -255,31 +255,46 @@ struct VideoListView : View {
     }
     var body : some View {
         VStack {
-            FFPlayMetalView(vm:ffplaymodel)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+
             if( ffplaymodel.isplay == true ) {
+                
+                //FFPlay
+                //FFPlayImageView(vm:ffplaymodel)
+                FFPlayMetalView(vm:ffplaymodel)
+                    .aspectRatio(
+                        CGFloat(ffplaymodel.width) / CGFloat(ffplaymodel.height),
+                        contentMode: .fit
+                    )
+                    .frame(maxWidth: .infinity)
+                
+                //time truck
                 if ( ffplaymodel.duration.components.seconds > 0 ) {
                     TimeTruckSliderView(model: ttm)
-                                    .padding()
-                                    .border(Color.gray)
+                        .padding()
+                        .border(Color.gray)
+                }
+                
+                //media information
+                VStack {
+                    Text( ffplaymodel.format )
+                    Text( ffplaymodel.duration.formatted(.units(allowed: [.days, .hours, .minutes, .seconds, .milliseconds], width: .abbreviated)))
+                    Text( ffplaymodel.now.formatted(.units(allowed: [.days, .hours, .minutes, .seconds, .milliseconds], width: .abbreviated)) )
+                }
+                .padding(.horizontal)
+
+                //pause
+                Button("pause") {
+                    ffplaymodel.reqpause = true
                 }
             }
-            VStack {
-                Text( ffplaymodel.format )
-                Text( ffplaymodel.duration.formatted(.units(allowed: [.days, .hours, .minutes, .seconds, .milliseconds], width: .abbreviated)))
-                Text( ffplaymodel.now.formatted(.units(allowed: [.days, .hours, .minutes, .seconds, .milliseconds], width: .abbreviated)) )
-            }
-            .padding(.horizontal)
-            //pause
-            Button("pause") {
-                ffplaymodel.reqpause = true
-            }
-            //stop
+            
+            //停止
             if( ffplaymodel.isplay == true ) {
                 Button("stop") {
                     ffplaymodel.isplay = false
                 }
             }
+
             Button("start") {
                 guard ffplaymodel.isplay == false else {return}
                 ffplaymodel.probe(fileurl)
