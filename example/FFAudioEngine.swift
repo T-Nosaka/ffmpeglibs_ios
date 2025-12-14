@@ -76,8 +76,8 @@ actor FFAudioEngine {
         engine.connect(playerNode, to: engine.mainMixerNode, format: audioFormat)
         try? engine.start()
 
-        //最小のバッファサイズ
-        self.buffersize = Int32(sampleRate * 2 * channels)/100
+        //最小のバッファサイズ(16bit用)
+        self.buffersize = (Int32(sampleRate * 2 * channels)/100)*2
         buffer1 = UnsafeMutableBufferPointer<UInt8>.allocate(capacity: Int(self.buffersize))
         buffer2 = UnsafeMutableBufferPointer<UInt8>.allocate(capacity: Int(self.buffersize))
         
