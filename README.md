@@ -22,6 +22,7 @@ $(PROJECT_DIR)/ffmpeglib/libsvtav1/output/arm64/iOSSim
 $(PROJECT_DIR)/ffmpeglib/vvenc/output/arm64/iOSSim
 $(PROJECT_DIR)/ffmpeglib/dav1d/output/arm64/iOSSim
 $(PROJECT_DIR)/ffmpeglib/fdk-aac/output/arm64/iOSSim
+$(PROJECT_DIR)/ffmpeglib/libopus/output/arm64/iOSSim
 $(PROJECT_DIR)/ffmpeglib/libsdl/output/arm64/iOSSim
 $(PROJECT_DIR)/ffmpeglib/cJSON/output/arm64/iOSSim
 ```
@@ -34,6 +35,7 @@ $(PROJECT_DIR)/ffmpeglib/libsvtav1/output/arm64/iOS
 $(PROJECT_DIR)/ffmpeglib/vvenc/output/arm64/iOS
 $(PROJECT_DIR)/ffmpeglib/dav1d/output/arm64/iOS
 $(PROJECT_DIR)/ffmpeglib/fdk-aac/output/arm64/iOS
+$(PROJECT_DIR)/ffmpeglib/libopus/output/arm64/iOS
 $(PROJECT_DIR)/ffmpeglib/libsdl/output/arm64/iOS
 $(PROJECT_DIR)/ffmpeglib/cJSON/output/arm64/iOS
 ```
@@ -53,6 +55,7 @@ $(PROJECT_DIR)/ffmpeglib/cJSON/output/arm64/iOS
 -lSvtAv1Enc
 -lvvenc
 -lfdk-aac
+-lopus
 -lSDL2
 -lcjson
 ```
@@ -124,6 +127,14 @@ tar -xvf x264-stable.tar.gz
 ```
 wget https://github.com/videolan/x265/archive/refs/tags/3.4.tar.gz
 tar -xvf 3.4.tar.gz
+./iosscrach.sh
+./iossimscrach.sh
+```
+## libopus
+### build
+```
+wget https://github.com/xiph/opus/archive/refs/tags/v1.5.2.tar.gz
+tar -xvf v1.5.2.tar.gz
 ./iosscrach.sh
 ./iossimscrach.sh
 ```
