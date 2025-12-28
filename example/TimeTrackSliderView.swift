@@ -161,12 +161,6 @@ struct TimeTruckSliderView: View {
             let boxWidthPx = geometry.size.width
             let boxHeightPx = geometry.size.height
             
-            // サイズをモデルに伝達
-            Color.clear
-                .onAppear {
-                    model.boxWidthPx = Float(boxWidthPx)
-                }
-            
             // 描画ロジックをCanvas内に記述
             Canvas { context, size in
                 // モデルが初期化され、幅が取得されていることを確認
@@ -213,6 +207,14 @@ struct TimeTruckSliderView: View {
             .gesture(panGesture) // 1本指での移動
             .gesture(zoomGesture) // 2本指でのズーム
             
+            .onGeometryChange(for: CGFloat.self) { proxy in
+                proxy.size.width
+            } action : { newValue in
+                if newValue.isFinite {
+                    // サイズをモデルに伝達
+                    model.boxWidthPx = Float(boxWidthPx)
+                }
+            }
         }
         // コンポーネントの高さ設定
         .frame(height: trackHeight * heightMag + CGFloat(topMargin))
