@@ -14,6 +14,7 @@ public class ffprobe {
     public var format = "unknown"
     public var duration = 0.0
     public var streams : [streaminfo] = []
+    public var metadata: [String: String]?
     
     public class streaminfo {
         public var id: Int = 0
@@ -23,6 +24,8 @@ public class ffprobe {
         public var height: Int = 0
         public var channels: Int = 0
         public var sample_rate: Int = 0
+        public var codec_tag: Int = 0
+        public var rotation: Double? = nil
     }
     
     public init () {
@@ -35,7 +38,8 @@ public class ffprobe {
         let mediainfo = ffmpeglib.Convert.parse(filepath: filepath.path)
         self.format = mediainfo["format"] as! String
         self.duration = mediainfo["duration"] as? Double ?? 0.0
-
+        self.metadata = mediainfo["metadata"] as? [String: String]
+        
         let streams = mediainfo["streams"] as! [[String: Any]]
         for stream in streams {
             let streaminfo = streaminfo()
@@ -45,11 +49,13 @@ public class ffprobe {
             if( streaminfo.type == ffmpeglib.AVMediaType.video ) {
                 streaminfo.width = stream["width"] as! Int
                 streaminfo.height = stream["height"] as! Int
+                streaminfo.rotation = stream["rotation"] as? Double
             }
             if( streaminfo.type == ffmpeglib.AVMediaType.audio ) {
                 streaminfo.channels = stream["channels"] as! Int
                 streaminfo.sample_rate = stream["sample_rate"] as! Int
             }
+            
             self.streams.append(streaminfo)
         }
     }

@@ -987,6 +987,7 @@ void fftools_reset()
 #include "cJSON.h"
 
 #include "libavformat/internal.h"
+#include <libavutil/display.h>
 
 void filedump( const char *filename, cJSON* root )
 {
@@ -1088,6 +1089,16 @@ void filedump( const char *filename, cJSON* root )
             cJSON_AddNumberToObject(stream, "frame_rate", av_q2d(st->avg_frame_rate));
             cJSON_AddNumberToObject(stream, "tbr", av_q2d(st->r_frame_rate));
             cJSON_AddNumberToObject(stream, "tbn", st->time_base.den);
+
+            // --- 回転情報の取得開始 ---
+            const AVPacketSideData* sd = av_packet_side_data_get(st->codecpar->coded_side_data,
+                                               st->codecpar->nb_coded_side_data,
+                                               AV_PKT_DATA_DISPLAYMATRIX);
+            if (sd) {
+                // 行列データから回転角度を算出
+                double rotation = -av_display_rotation_get((const int32_t *)sd->data);
+                cJSON_AddNumberToObject(stream, "rotation",rotation);
+            }
         }
 
         // オーディオストリームの場合、チャンネル数とサンプリングレートを追加
@@ -1095,7 +1106,7 @@ void filedump( const char *filename, cJSON* root )
             cJSON_AddNumberToObject(stream, "channels", par->ch_layout.nb_channels);
             cJSON_AddNumberToObject(stream, "sample_rate", par->sample_rate);
         }
-
+        
         cJSON_AddItemToArray(streams, stream);
     }
     cJSON_AddItemToObject(root, "streams", streams);
