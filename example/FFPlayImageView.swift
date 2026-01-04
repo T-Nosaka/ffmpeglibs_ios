@@ -55,8 +55,19 @@ class FFPlayImageViewModel: ObservableObject {
         var vfind = false
         for stream in fp.streams {
             if ( vfind == false && stream.type == .video) {
-                self.width = stream.width
-                self.height = stream.height
+                if( stream.rotation == nil ) {
+                    self.width = stream.width
+                    self.height = stream.height
+                } else {
+                    if( Int(stream.rotation!) == 90 || Int(stream.rotation!) == -90 ) {
+                        self.width = stream.height
+                        self.height = stream.width
+                    } else {
+                        self.width = stream.width
+                        self.height = stream.height
+                    }
+                }
+                
                 vfind = true
             }
         }
