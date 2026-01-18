@@ -2484,7 +2484,7 @@ int ffplayobj::play(const std::string& strfilename, std::string vfilter, std::st
 {
     auto infilepath = strfilename.c_str();
     if ( !vfilter.empty() ) { vfilter += ","; }
-    auto vfiltercstr = vfilter + "format=rgb24";
+    auto vfiltercstr = vfilter + "format=bgra";
 
     int flags, ret;
 

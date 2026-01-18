@@ -25,7 +25,7 @@ protected:
     void alloc_pixeldata( int length ) {
         if( m_pixeldata_length < length ) {
             if( m_pixeldata != nullptr ) {
-                delete m_pixeldata;
+                delete[] m_pixeldata;
             }
             m_pixeldata = new uint32_t[length];
             m_pixeldata_length = length;

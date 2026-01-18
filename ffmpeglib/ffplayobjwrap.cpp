@@ -70,18 +70,17 @@ void ffplayobjwrap::setExtCallback( void* ext,
                                onclock( ext, pos, clock, pause );
                            },
                            [this,ext,upload_texture_cb](ffplayobj& instance,int width, int height, int format, const void *pixels, int pitch) {
-
                                auto numPixels = width * height;
                                alloc_pixeldata(numPixels);
-                               //Repackaging RGB24 into an Integer Array
+                               //Repackaging bgra into an Integer Array
                                auto srcPixels = static_cast<const uint8_t*>(pixels);
-                               for (int y = 0; y < height; ++y) {
-                                   const uint8_t* row = srcPixels + y * pitch;
-                                   for (int x = 0; x < width; ++x) {
-                                       uint8_t r = row[x * 3];
-                                       uint8_t g = row[x * 3 + 1];
-                                       uint8_t b = row[x * 3 + 2];
-                                       m_pixeldata[y * width + x] = (0xFF<<24 | r<<16 | g<<8 | b);
+                               
+                               if( width*4 == pitch ) {
+                                   memcpy( m_pixeldata , srcPixels, height*pitch );
+                               } else {
+                                   for (int y = 0; y < height; ++y) {
+                                       const uint8_t* row = srcPixels + y * pitch;
+                                       memcpy( m_pixeldata + y * width , row, pitch );
                                    }
                                }
                                upload_texture_cb( ext, width, height, format, m_pixeldata, width*sizeof(uint32_t));
@@ -113,8 +112,7 @@ void ffplayobjwrap::setExtCallback( void* ext,
                            [this,ext,update_subtile_cb](ffplayobj& instance, AVSubtitle& avsubtitle) {
                                update_subtile_cb(ext);
                            }
-                           );
-    
+                        );
 }
 
 int ffplayobjwrap::play(const char* strfilename, const char* vfilter, const char* afilter ) {
