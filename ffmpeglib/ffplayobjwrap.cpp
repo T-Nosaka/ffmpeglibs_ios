@@ -80,7 +80,7 @@ void ffplayobjwrap::setExtCallback( void* ext,
                                } else {
                                    for (int y = 0; y < height; ++y) {
                                        const uint8_t* row = srcPixels + y * pitch;
-                                       memcpy( m_pixeldata + y * width , row, pitch );
+                                       memcpy( reinterpret_cast<uint8_t*>(m_pixeldata + y * width) , row, width*4 );
                                    }
                                }
                                upload_texture_cb( ext, width, height, format, m_pixeldata, width*sizeof(uint32_t));
