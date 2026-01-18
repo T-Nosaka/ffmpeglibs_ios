@@ -10,25 +10,18 @@
 #include "ffplayobj.h"
 
 extern "C" {
-//DUMMY Function
-SDL_bool SDL_IsIPad(void) {
-    return SDL_bool::SDL_FALSE;
-}
+    //DUMMY Function
+    SDL_bool SDL_IsIPad(void) {
+        return SDL_bool::SDL_FALSE;
+    }
 }
 
 ffplayobjwrap::ffplayobjwrap() {
     player = new ffplayobj();
-    m_pixeldata = nullptr;
-    m_pixeldata_length = 0;
 }
 
 ffplayobjwrap::~ffplayobjwrap() {
     delete player;
-    if( m_pixeldata != nullptr) {
-        delete m_pixeldata;
-        m_pixeldata = nullptr;
-        m_pixeldata_length = 0;
-    }
 }
 
 void ffplayobjwrap::Delete(ffplayobjwrap* p) {
@@ -70,20 +63,7 @@ void ffplayobjwrap::setExtCallback( void* ext,
                                onclock( ext, pos, clock, pause );
                            },
                            [this,ext,upload_texture_cb](ffplayobj& instance,int width, int height, int format, const void *pixels, int pitch) {
-                               auto numPixels = width * height;
-                               alloc_pixeldata(numPixels);
-                               //Repackaging bgra into an Integer Array
-                               auto srcPixels = static_cast<const uint8_t*>(pixels);
-                               
-                               if( width*4 == pitch ) {
-                                   memcpy( m_pixeldata , srcPixels, height*pitch );
-                               } else {
-                                   for (int y = 0; y < height; ++y) {
-                                       const uint8_t* row = srcPixels + y * pitch;
-                                       memcpy( reinterpret_cast<uint8_t*>(m_pixeldata + y * width) , row, width*4 );
-                                   }
-                               }
-                               upload_texture_cb( ext, width, height, format, m_pixeldata, width*sizeof(uint32_t));
+                               upload_texture_cb( ext, width, height, format, pixels, pitch);
                            },
                            [this,ext,oncontrol](ffplayobj& instance,int64_t* control, float* fargs) {
                                //req seek

@@ -19,19 +19,6 @@ class ffplayobjwrap {
 protected:
     ffplayobj* player;
     
-    //allocate pixeldata
-    uint32_t* m_pixeldata;
-    int m_pixeldata_length;
-    void alloc_pixeldata( int length ) {
-        if( m_pixeldata_length < length ) {
-            if( m_pixeldata != nullptr ) {
-                delete[] m_pixeldata;
-            }
-            m_pixeldata = new uint32_t[length];
-            m_pixeldata_length = length;
-        }
-    }
-    
 public:
     ffplayobjwrap();
    
