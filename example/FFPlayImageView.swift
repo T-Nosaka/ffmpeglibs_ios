@@ -136,6 +136,10 @@ class FFPlayImageViewModel: ObservableObject {
             },upload_texture_cb: { width, height, format, pixelsPointer, pitch in
 
                 let size = height * pitch
+
+                let pixelData = Data(bytes: pixelsPointer, count: size)
+                guard let provider = CGDataProvider(data: pixelData as CFData) else { return }
+
                 let img = CGImage(
                     width: width,
                     height: height,
@@ -144,10 +148,7 @@ class FFPlayImageViewModel: ObservableObject {
                     bytesPerRow: pitch,
                     space: colorSpace,
                     bitmapInfo: bitmapInfo,
-                    provider: CGDataProvider(
-                        directInfo: UnsafeMutableRawPointer(mutating: pixelsPointer),
-                        size: off_t(size),
-                        callbacks: &callbacks)!,
+                    provider: provider,
                     decode: nil,
                     shouldInterpolate: false,
                     intent: .defaultIntent
