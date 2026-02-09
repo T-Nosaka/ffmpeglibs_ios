@@ -2386,8 +2386,8 @@ void ffplayobj::event_loop(VideoState *cur_stream)
                     continue;
                 if (pos < 0)
                     pos = static_cast<double>(avio_tell(cur_stream->ic->pb));
-
-                now=get_clock(&is->extclk);
+                
+                now=get_master_clock(is);
                 m_onclick(*this,pos, now, iPause);
 
                 //制御確認
