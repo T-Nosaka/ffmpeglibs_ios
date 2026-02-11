@@ -45,7 +45,7 @@ public:
                         void (*onstopaudio)(void*) = nullptr,
                         void (*update_subtile_cb)(void*) = nullptr );
 
-    int play(const char* strfilename, const char* vfilter, const char* afilter );
+    int play(const char* strfilename,const float speed, const char* vfilter, const char* afilter );
 } SWIFT_UNSAFE_REFERENCE;
 
 #endif /* ffplayobjwrap_hpp */

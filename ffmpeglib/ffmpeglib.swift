@@ -212,8 +212,8 @@ public class Play: @unchecked Sendable {
     //
     // play mediafile
     //
-    public func play( strfilename:String, vfilter:String, afilter:String ) -> Int {
-        return Int(self.wrapper.play( strfilename, vfilter, afilter ))
+    public func play( strfilename:String, speed:Float, vfilter:String, afilter:String ) -> Int {
+        return Int(self.wrapper.play( strfilename, speed, vfilter, afilter ))
     }
 }
 

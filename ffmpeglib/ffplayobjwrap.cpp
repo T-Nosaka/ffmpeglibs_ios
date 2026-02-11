@@ -101,6 +101,6 @@ void ffplayobjwrap::setExtCallback( void* ext,
                         );
 }
 
-int ffplayobjwrap::play(const char* strfilename, const char* vfilter, const char* afilter ) {
-    return player->play(strfilename,vfilter,afilter);
+int ffplayobjwrap::play(const char* strfilename, const float speed, const char* vfilter, const char* afilter ) {
+    return player->play(strfilename,speed,vfilter,afilter);
 }

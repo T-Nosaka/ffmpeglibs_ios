@@ -574,6 +574,8 @@ private:
     std::function<void(ffplayobj&)> m_onstopaudio;
     std::function<void(ffplayobj&,AVSubtitle&)> m_update_subtile_cb;
 
+    
+    float master_speed;
 public:
 
     void audiocallback(Uint8 *stream, int len) {
@@ -608,7 +610,7 @@ public:
     void setSubTitle( bool bSubtitle ) { subtitle_disable = bSubtitle ? 0 : 1; }
     void setAutoexit( bool bAutoexit ) { autoexit = bAutoexit ? 1 : 0; }
 
-    int play(const std::string& strfilename, std::string vfilter, std::string afilter );
+    int play(const std::string& strfilename, float speed, std::string vfilter, std::string afilter );
 };
 
 

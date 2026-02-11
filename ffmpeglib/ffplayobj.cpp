@@ -758,9 +758,10 @@ void ffplayobj::stream_seek(VideoState *is, int64_t pos, int64_t rel, int by_byt
     if (!is->seek_req) {
         is->seek_pos = pos;
         is->seek_rel = rel;
-        is->seek_flags &= ~AVSEEK_FLAG_BYTE;
-        if (by_bytes)
-            is->seek_flags |= AVSEEK_FLAG_BYTE;
+        is->seek_flags = AVSEEK_FLAG_ANY;
+//        is->seek_flags &= ~AVSEEK_FLAG_BYTE;
+//        if (by_bytes)
+//            is->seek_flags |= AVSEEK_FLAG_BYTE;
         is->seek_req = 1;
         SDL_CondSignal(is->continue_read_thread);
     }
@@ -928,7 +929,7 @@ void ffplayobj::video_refresh(void *opaque, double *remaining_time)
             video_display(is);
     }
     is->force_refresh = 0;
-    if (show_status) {
+    if (/*show_status*/ false ) {
         AVBPrint buf;
         static int64_t last_time;
         int64_t cur_time;
@@ -1353,6 +1354,14 @@ int ffplayobj::audio_thread(void *arg)
                 av_frame_move_ref(af->frame, frame);
                 frame_queue_push(&is->sampq);
 
+                {
+                    AVBPrint buf;
+                    av_bprint_init(&buf, 0, AV_BPRINT_SIZE_AUTOMATIC);
+                    av_bprintf(&buf,"audio pts = %7.2f \r",af->pts);
+                    av_log(NULL, AV_LOG_INFO, "%s", buf.str);
+                    av_bprint_finalize(&buf, NULL);
+                }
+                
                 if (is->audioq.serial != is->auddec.pkt_serial)
                     break;
             }
@@ -1468,6 +1477,15 @@ int ffplayobj::video_thread(void *arg)
             pts = (frame->pts == AV_NOPTS_VALUE) ? NAN : frame->pts * av_q2d(tb);
             ret = queue_picture(is, frame, pts, lduration, fd ? fd->pkt_pos : -1, is->viddec.pkt_serial);
             av_frame_unref(frame);
+            
+            {
+                AVBPrint buf;
+                av_bprint_init(&buf, 0, AV_BPRINT_SIZE_AUTOMATIC);
+                av_bprintf(&buf,"video pts = %7.2f \r",pts);
+                av_log(NULL, AV_LOG_INFO, "%s", buf.str);
+                av_bprint_finalize(&buf, NULL);
+            }
+            
             if (is->videoq.serial != is->viddec.pkt_serial)
                 break;
         }
@@ -2184,6 +2202,12 @@ int ffplayobj::read_thread(void *arg)
                     set_clock(&is->extclk, NAN, 0);
                 } else {
                     set_clock(&is->extclk, seek_target / (double)AV_TIME_BASE, 0);
+                    
+                    if (is->audio_st)
+                        sync_clock_to_slave(&is->extclk, &is->audclk);
+                    if (is->video_st)
+                        sync_clock_to_slave(&is->extclk, &is->vidclk);
+                    
                 }
             }
             is->seek_req = 0;
@@ -2482,10 +2506,12 @@ void ffplayobj::ffplay_release(VideoState *is) {
     nb_vfilters = 0;
 }
 
+
+
 /*
  * ffplay
  */
-int ffplayobj::play(const std::string& strfilename, std::string vfilter, std::string afilter )
+int ffplayobj::play(const std::string& strfilename, float speed, std::string vfilter, std::string afilter )
 {
     auto infilepath = strfilename.c_str();
     if ( !vfilter.empty() ) { vfilter += ","; }
@@ -2512,6 +2538,12 @@ int ffplayobj::play(const std::string& strfilename, std::string vfilter, std::st
         return -3;
     }
 
+    //速度調整
+    set_clock_speed(&m_is->vidclk, speed);
+    set_clock_speed(&m_is->audclk, speed);
+    set_clock_speed(&m_is->extclk, speed);
+    master_speed = speed;
+    
     //表示モード
     m_is->show_mode = VideoState::ShowMode::SHOW_MODE_VIDEO;
 
