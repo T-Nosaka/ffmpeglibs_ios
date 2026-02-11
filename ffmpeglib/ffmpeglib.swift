@@ -141,8 +141,13 @@ public class Play: @unchecked Sendable {
     public func audiocallback(audiobuffer:UnsafeMutableRawPointer, len:Int32) {
         self.wrapper.audiocallback(audiobuffer, len)
     }
-    
-    
+    public func setStarttime( stime:Int64 ) {
+        self.wrapper.setStartTime(stime);
+    }
+    public func setDuration( dtime:Int64 ) {
+        self.wrapper.setDuration(dtime);
+    }
+
     // Define callback function
     private var FFPlay_onExit: (()->Bool)? = nil
     private var FFPlay_onClock: ((Double,Double,Int32)->Void)? = nil

@@ -294,6 +294,8 @@ protected:
         SDL_cond *continue_read_thread;
     } VideoState;
 
+public:
+    
     int default_width ;
     int default_height ;
     int screen_width ;

@@ -30,6 +30,8 @@ public:
     void setVideo( bool bVideo );
     void setSubTitle( bool bSubtitle );
     void setAutoexit( bool bAutoexit );
+    void setStartTime( int64_t stime );
+    void setDuration( int64_t dtime );
 
     void audiocallback(uint8_t* stream, int len);
     

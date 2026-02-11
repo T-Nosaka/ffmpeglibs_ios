@@ -40,6 +40,12 @@ void ffplayobjwrap::setSubTitle( bool bSubtitle ) {
 void ffplayobjwrap::setAutoexit( bool bAutoexit ) {
     player->setAutoexit( bAutoexit);
 }
+void ffplayobjwrap::setStartTime( int64_t stime ) {
+    player->start_time = stime;
+}
+void ffplayobjwrap::setDuration( int64_t dtime ) {
+    player->duration = dtime;
+}
 
 void ffplayobjwrap::audiocallback(uint8_t* stream, int len) {
     player->audiocallback( stream, len);

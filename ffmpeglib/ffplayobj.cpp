@@ -1964,6 +1964,10 @@ int ffplayobj::stream_component_open(VideoState *is, int stream_index)
 int ffplayobj::read_thread(void *arg)
 {
     VideoState *is = static_cast<VideoState*>(arg);
+    if( is == NULL ) {
+        //バグることがあった
+        return 0;
+    }
     AVFormatContext *ic = NULL;
     int err, i, ret;
     int st_index[AVMEDIA_TYPE_NB];
@@ -2388,6 +2392,7 @@ void ffplayobj::event_loop(VideoState *cur_stream)
                     pos = static_cast<double>(avio_tell(cur_stream->ic->pb));
                 
                 now=get_master_clock(is);
+//                now=get_clock(&is->extclk);
                 m_onclick(*this,pos, now, iPause);
 
                 //制御確認
@@ -2480,7 +2485,7 @@ void ffplayobj::ffplay_release(VideoState *is) {
 /*
  * ffplay
  */
-int ffplayobj::play(const std::string& strfilename, std::string vfilter, std::string afilter  )
+int ffplayobj::play(const std::string& strfilename, std::string vfilter, std::string afilter )
 {
     auto infilepath = strfilename.c_str();
     if ( !vfilter.empty() ) { vfilter += ","; }
@@ -2491,7 +2496,6 @@ int ffplayobj::play(const std::string& strfilename, std::string vfilter, std::st
     infinite_buffer = -1;
     startup_volume = 100;
     nb_vfilters = 0;
-
     //オーディオフィルタ
     if( afilter.size() > 0 ) {
         afilters = (char*)afilter.c_str();
