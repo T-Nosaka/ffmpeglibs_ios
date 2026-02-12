@@ -26,6 +26,7 @@ public class ffprobe {
         public var sample_rate: Int = 0
         public var codec_tag: Int = 0
         public var rotation: Double? = nil
+        public var framerate: Double? = nil
     }
     
     public init () {
@@ -50,6 +51,7 @@ public class ffprobe {
                 streaminfo.width = stream["width"] as! Int
                 streaminfo.height = stream["height"] as! Int
                 streaminfo.rotation = stream["rotation"] as? Double
+                streaminfo.framerate = stream["frame_rate"] as? Double
             }
             if( streaminfo.type == ffmpeglib.AVMediaType.audio ) {
                 streaminfo.channels = stream["channels"] as! Int
