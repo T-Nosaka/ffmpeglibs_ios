@@ -35,30 +35,39 @@ public class ffprobe {
     //
     // probe
     //
-    public func probe(_ filepath: URL ) {
-        let mediainfo = ffmpeglib.Convert.parse(filepath: filepath.path)
-        self.format = mediainfo["format"] as! String
-        self.duration = mediainfo["duration"] as? Double ?? 0.0
-        self.metadata = mediainfo["metadata"] as? [String: String]
+    public func probe(_ filepath: URL ) throws {
+        let mediainfo = try ffmpeglib.Convert.parse(filepath: filepath.path)
         
-        let streams = mediainfo["streams"] as! [[String: Any]]
-        for stream in streams {
-            let streaminfo = streaminfo()
-            streaminfo.id = stream["id"] as! Int
-            streaminfo.codecid = AVCodecID.valueOf(stream["codecid"] as! Int)
-            streaminfo.type = AVMediaType.valueOf(stream["type"] as! Int)
-            if( streaminfo.type == ffmpeglib.AVMediaType.video ) {
-                streaminfo.width = stream["width"] as! Int
-                streaminfo.height = stream["height"] as! Int
-                streaminfo.rotation = stream["rotation"] as? Double
-                streaminfo.framerate = stream["frame_rate"] as? Double
+        if( mediainfo["format"] != nil ) {
+            self.format = mediainfo["format"] as! String
+        }
+        if( mediainfo["duration"] != nil ) {
+            self.duration = mediainfo["duration"] as? Double ?? 0.0
+        }
+        if( mediainfo["metadata"] != nil ) {
+            self.metadata = mediainfo["metadata"] as? [String: String]
+        }
+        
+        if( mediainfo["streams"] != nil ) {
+            let streams = mediainfo["streams"] as! [[String: Any]]
+            for stream in streams {
+                let streaminfo = streaminfo()
+                streaminfo.id = stream["id"] as! Int
+                streaminfo.codecid = AVCodecID.valueOf(stream["codecid"] as! Int)
+                streaminfo.type = AVMediaType.valueOf(stream["type"] as! Int)
+                if( streaminfo.type == ffmpeglib.AVMediaType.video ) {
+                    streaminfo.width = stream["width"] as! Int
+                    streaminfo.height = stream["height"] as! Int
+                    streaminfo.rotation = stream["rotation"] as? Double
+                    streaminfo.framerate = stream["frame_rate"] as? Double
+                }
+                if( streaminfo.type == ffmpeglib.AVMediaType.audio ) {
+                    streaminfo.channels = stream["channels"] as! Int
+                    streaminfo.sample_rate = stream["sample_rate"] as! Int
+                }
+                
+                self.streams.append(streaminfo)
             }
-            if( streaminfo.type == ffmpeglib.AVMediaType.audio ) {
-                streaminfo.channels = stream["channels"] as! Int
-                streaminfo.sample_rate = stream["sample_rate"] as! Int
-            }
-            
-            self.streams.append(streaminfo)
         }
     }
 }
