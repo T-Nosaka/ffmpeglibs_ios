@@ -99,7 +99,6 @@ make_ios() {
         --disable-v4l2-m2m      \
         --disable-vaapi         \
         --disable-vdpau         \
-        --disable-videotoolbox  \
         --disable-alsa           \
         --disable-appkit         \
         --disable-avfoundation   \
