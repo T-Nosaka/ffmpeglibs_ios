@@ -59,6 +59,11 @@ $(PROJECT_DIR)/ffmpeglib/cJSON/output/arm64/iOS
 -lSDL2
 -lcjson
 ```
+### Frameworks, Libraries, and Embedded Content
+```
+libffmpeglib.a
+VideoToolbox.framework
+```
 ## ready build environment
 requires xcode.
 switch full xcode develop
