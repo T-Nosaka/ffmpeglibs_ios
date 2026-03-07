@@ -2438,33 +2438,10 @@ void ffplayobj::event_loop(VideoState *cur_stream)
                         iPause = 1 - iPause;
                     }
 
-                    //ステップ
-                    int64_t istep = controlarray[3];
-                    int64_t iDuration = controlarray[4];
-                    if( istep != 0 ) {
-
-                        if (istep > 0) {
-                            if( istep==1) {
-                                //フォワード
-                                step_to_next_frame(cur_stream);
-                            } else {
-                                if (iPause == 0) {
-                                    toggle_pause(cur_stream);
-                                    iPause = 1;
-                                }
-
-                                stepbystep(cur_stream,now,istep,iDuration);
-                            }
-                            iPause = 1;
-                        } else {
-                            //リワード
-                            if (iPause == 0) {
-                                toggle_pause(cur_stream);
-                                iPause = 1;
-                            }
-
-                            stepbystep(cur_stream,now,istep,iDuration);
-                        }
+                    //強制描画
+                    int64_t iforcerefresh = controlarray[3];
+                    if( iforcerefresh != 0 ) {
+                        cur_stream->force_refresh = 1;
                     }
                 }
 
