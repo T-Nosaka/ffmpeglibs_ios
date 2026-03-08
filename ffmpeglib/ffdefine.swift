@@ -582,5 +582,9 @@ public enum AVCodecID: Int {
     static func valueOf(_ typeId: Int) -> AVCodecID {
         return AVCodecID(rawValue: typeId) ?? .none
     }
+    
+    public var description: String {
+        return String(describing: self)
+    }
 }
 
