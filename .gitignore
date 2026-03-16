@@ -138,3 +138,5 @@ libx265/makegenerate/
 libopus/opus-*
 libopus/makegenerate/
 libopus/output/
+libvpx/libvpx-*
+libvpx/output/

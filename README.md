@@ -36,6 +36,7 @@ $(PROJECT_DIR)/ffmpeglib/vvenc/output/arm64/iOS
 $(PROJECT_DIR)/ffmpeglib/dav1d/output/arm64/iOS
 $(PROJECT_DIR)/ffmpeglib/fdk-aac/output/arm64/iOS
 $(PROJECT_DIR)/ffmpeglib/libopus/output/arm64/iOS
+$(PROJECT_DIR)/ffmpeglib/libvpx/output/arm64/iOS
 $(PROJECT_DIR)/ffmpeglib/libsdl/output/arm64/iOS
 $(PROJECT_DIR)/ffmpeglib/cJSON/output/arm64/iOS
 ```
@@ -58,6 +59,11 @@ $(PROJECT_DIR)/ffmpeglib/cJSON/output/arm64/iOS
 -lopus
 -lSDL2
 -lcjson
+```
+#### iPhone only
+add
+```
+-lvpx
 ```
 ### Frameworks, Libraries, and Embedded Content
 ```
@@ -142,6 +148,13 @@ wget https://github.com/xiph/opus/archive/refs/tags/v1.5.2.tar.gz
 tar -xvf v1.5.2.tar.gz
 ./iosscrach.sh
 ./iossimscrach.sh
+```
+## libvpx
+#### build
+```
+wget https://github.com/webmproject/libvpx/archive/refs/tags/v1.16.0.tar.gz
+tar -xvf v1.16.0.tar.gz
+./scrach.sh
 ```
 ## cjson
 ### build
