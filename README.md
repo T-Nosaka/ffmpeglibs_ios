@@ -171,7 +171,7 @@ brew install automake
 ```
 ### download
 ```
-wget https://www.ffmpeg.org/releases/ffmpeg-8.0.tar.gz
+wget https://www.ffmpeg.org/releases/ffmpeg-8.1.tar.gz
 ```
 ### Building bin2c
 > Starting with FFmpeg 8.0, `textformat`, `resources`, and `graph` have been added to `fftools`.
