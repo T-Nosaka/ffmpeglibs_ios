@@ -23,6 +23,7 @@ extern "C" {
 #include "libavutil/pixdesc.h"
 #include "libavutil/dict.h"
 #include "libavutil/fifo.h"
+#include "libavutil/parseutils.h"
 #include "libavutil/samplefmt.h"
 #include "libavutil/time.h"
 #include "libavutil/bprint.h"
@@ -263,6 +264,7 @@ protected:
         AVComplexFloat *rdft_data;
         int xpos;
         double last_vis_time;
+        RenderParams render_params;
 
         int subtitle_stream;
         AVStream *subtitle_st;
@@ -293,6 +295,8 @@ protected:
 
         SDL_cond *continue_read_thread;
     } VideoState;
+
+    enum AVAlphaMode sdl_supported_alpha_modes[2];
 
 public:
     
@@ -336,6 +340,7 @@ public:
     int autorotate ;
     int find_stream_info ;
     int filter_nbthreads ;
+    char *video_background ;
 
     struct TextureFormatEntry {
         enum AVPixelFormat format;

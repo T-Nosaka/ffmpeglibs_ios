@@ -7,7 +7,7 @@ rm -rf output/*
 
 export SRCFOLDER=`pwd`
 
-cd ffmpeg-8.0
+cd ffmpeg-8.1
 
 #TOOLCHAIN
 export TOOLCHAIN="/Applications/Xcode.app/Contents/Developer"

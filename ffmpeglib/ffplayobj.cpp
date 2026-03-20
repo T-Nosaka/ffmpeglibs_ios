@@ -102,11 +102,15 @@ ffplayobj::ffplayobj() {
     autorotate = 1;
     find_stream_info = 1;
     filter_nbthreads = 0;
+    video_background = nullptr;
 
     sws_dict = nullptr;
     swr_opts = nullptr;
     format_opts = nullptr;
     codec_opts = nullptr;
+
+    sdl_supported_alpha_modes[0] = AVALPHA_MODE_UNSPECIFIED;
+    sdl_supported_alpha_modes[1] = AVALPHA_MODE_STRAIGHT;
 }
 
 ffplayobj::~ffplayobj() {
@@ -481,7 +485,6 @@ void ffplayobj::video_image_display(VideoState *is)
 {
     Frame *vp;
     Frame *sp = NULL;
-    SDL_Rect rect;
 
     vp = frame_queue_peek_last(&is->pictq);
 
@@ -1122,6 +1125,7 @@ int ffplayobj::configure_video_filters(AVFilterGraph *graph, VideoState *is, con
     par->sample_aspect_ratio = codecpar->sample_aspect_ratio;
     par->color_space         = frame->colorspace;
     par->color_range         = frame->color_range;
+    par->alpha_mode          = frame->alpha_mode;
     par->frame_rate          = fr;
 
     par->hw_frames_ctx = frame->hw_frames_ctx;
@@ -1142,6 +1146,11 @@ int ffplayobj::configure_video_filters(AVFilterGraph *graph, VideoState *is, con
 
     if ((ret = av_opt_set_array(filt_out, "pixel_formats", AV_OPT_SEARCH_CHILDREN,
                                 0, nb_pix_fmts, AV_OPT_TYPE_PIXEL_FMT, pix_fmts)) < 0)
+        goto fail;
+
+    if ((ret = av_opt_set_array(filt_out, "alphamodes", AV_OPT_SEARCH_CHILDREN,
+                                0, FF_ARRAY_ELEMS(sdl_supported_alpha_modes),
+                                AV_OPT_TYPE_INT, sdl_supported_alpha_modes)) < 0)
         goto fail;
 
     ret = avfilter_init_dict(filt_out, NULL);
@@ -1991,6 +2000,7 @@ int ffplayobj::read_thread(void *arg)
     int st_index[AVMEDIA_TYPE_NB];
     AVPacket *pkt = NULL;
     int64_t stream_start_time;
+    char metadata_description[96];
     int pkt_in_play_range = 0;
     const AVDictionaryEntry *t;
     SDL_mutex *wait_mutex = SDL_CreateMutex();
@@ -2096,8 +2106,10 @@ int ffplayobj::read_thread(void *arg)
 
     is->realtime = is_realtime(ic);
 
-    if (show_status)
+    if (show_status) {
+        fprintf(stderr, "\x1b[2K\r");
         av_dump_format(ic, 0, is->filename, 0);
+    }
 
     for (i = 0; i < ic->nb_streams; i++) {
         AVStream *st = ic->streams[i];
@@ -2106,6 +2118,9 @@ int ffplayobj::read_thread(void *arg)
         if (type >= 0 && wanted_stream_spec[type] && st_index[type] == -1)
             if (avformat_match_stream_specifier(ic, st, wanted_stream_spec[type]) > 0)
                 st_index[type] = i;
+        // Clear all pre-existing metadata update flags to avoid printing
+        // initial metadata as update.
+        st->event_flags &= ~AVSTREAM_EVENT_FLAG_METADATA_UPDATED;
     }
     for (i = 0; i < AVMEDIA_TYPE_NB; i++) {
         if (wanted_stream_spec[i] && st_index[i] == -1) {
@@ -2272,6 +2287,19 @@ int ffplayobj::read_thread(void *arg)
         } else {
             is->eof = 0;
         }
+
+        if (show_status && ic->streams[pkt->stream_index]->event_flags &
+            AVSTREAM_EVENT_FLAG_METADATA_UPDATED) {
+            fprintf(stderr, "\x1b[2K\r");
+            snprintf(metadata_description,
+                     sizeof(metadata_description),
+                     "\r  New metadata for stream %d",
+                     pkt->stream_index);
+            dump_dictionary(NULL, ic->streams[pkt->stream_index]->metadata,
+                               metadata_description, "    ", AV_LOG_INFO);
+        }
+        ic->streams[pkt->stream_index]->event_flags &= ~AVSTREAM_EVENT_FLAG_METADATA_UPDATED;
+
         /* check if packet is in play range specified by user, then queue, otherwise discard */
         stream_start_time = ic->streams[pkt->stream_index]->start_time;
         pkt_ts = pkt->pts == AV_NOPTS_VALUE ? pkt->dts : pkt->pts;
@@ -2353,6 +2381,16 @@ ffplayobj::VideoState* ffplayobj::stream_open(const char *filename,
         av_log(NULL, AV_LOG_WARNING, "-volume=%d < 0, setting to 0\n", startup_volume);
     if (startup_volume > 100)
         av_log(NULL, AV_LOG_WARNING, "-volume=%d > 100, setting to 100\n", startup_volume);
+    if (video_background) {
+        if (!strcmp(video_background, "none")) {
+            is->render_params.video_background_type = VIDEO_BACKGROUND_NONE;
+        } else if (strcmp(video_background, "tiles")) {
+            if (av_parse_color(is->render_params.video_background_color, video_background, -1, NULL) >= 0)
+                is->render_params.video_background_type = VIDEO_BACKGROUND_COLOR;
+            else
+                goto fail;
+        }
+    }
     startup_volume = av_clip(startup_volume, 0, 100);
     startup_volume = av_clip(SDL_MIX_MAXVOLUME * startup_volume / 100, 0, SDL_MIX_MAXVOLUME);
     is->audio_volume = startup_volume;
@@ -2361,7 +2399,7 @@ ffplayobj::VideoState* ffplayobj::stream_open(const char *filename,
     is->read_tid     = SDL_CreateThread(read_thread_wrap, "read_thread", this);
     if (!is->read_tid) {
         av_log(NULL, AV_LOG_FATAL, "SDL_CreateThread(): %s\n", SDL_GetError());
-        fail:
+fail:
         stream_close(is);
         return NULL;
     }
