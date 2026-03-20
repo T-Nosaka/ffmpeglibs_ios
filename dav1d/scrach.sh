@@ -4,7 +4,7 @@
 
 #TOOLCHAIN
 export TOOLCHAIN="/Applications/Xcode.app/Contents/Developer/Platforms/"
-export SVTAV1=dav1d-1.5.1
+export DAV1D=dav1d-1.5.3
 export OUTPUT_DIR=`pwd`/output
 
 
@@ -16,7 +16,7 @@ make_ios() {
   export CROSSFILE=$5
   export MESONEXT=$6
 
-  cd dav1d-1.5.1
+  cd ${DAV1D}
 
   rm -rf build
   mkdir build && cd build

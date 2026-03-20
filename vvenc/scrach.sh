@@ -2,7 +2,7 @@
 
 #TOOLCHAIN
 export TOOLCHAIN="/Applications/Xcode.app/Contents/Developer/Platforms/"
-export VVENC=vvenc-1.13.1
+export VVENC=vvenc-1.14.0
 export OUTPUT_DIR=`pwd`/output
 export MAKE=make
 export CMAKE=cmake

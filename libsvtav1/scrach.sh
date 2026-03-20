@@ -5,7 +5,7 @@
 
 #TOOLCHAIN
 export TOOLCHAIN="/Applications/Xcode.app/Contents/Developer/Platforms/"
-export SVTAV1=SVT-AV1-v3.1.2
+export SVTAV1=SVT-AV1-v4.0.1
 export OUTPUT_DIR=`pwd`/output
 export MAKE=make
 export CMAKE=cmake

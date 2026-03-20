@@ -81,8 +81,8 @@ sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer
 https://cmake.org/files/v3.16/cmake-3.16.0-Darwin-x86_64.dmg
 ### build
 ```
-wget https://gitlab.com/AOMediaCodec/SVT-AV1/-/archive/v3.1.2/SVT-AV1-v3.1.2.tar.gz
-tar -xvf SVT-AV1-v3.1.2.tar.gz
+wget https://gitlab.com/AOMediaCodec/SVT-AV1/-/archive/v4.0.1/SVT-AV1-v4.0.1.tar.gz
+tar -xvf SVT-AV1-v4.0.1.tar.gz
 ./iosscrach.sh
 ./iossimscrach.sh
 ```
@@ -93,8 +93,8 @@ brew install meson
 ```
 ### build
 ```
-wget https://github.com/videolan/dav1d/archive/refs/tags/1.5.1.tar.gz
-tar -xvf 1.5.1.tar.gz
+wget https://github.com/videolan/dav1d/archive/refs/tags/1.5.3.tar.gz
+tar -xvf 1.5.3.tar.gz
 ./scrach.sh
 ```
 ## fdk-aac
@@ -121,8 +121,8 @@ tar -xvf SDL2-2.32.2.tar.gz
 ## vvenc
 ### build
 ```
-wget https://github.com/fraunhoferhhi/vvenc/archive/refs/tags/v1.13.1.tar.gz
-tar -xvf v1.13.1.tar.gz
+wget https://github.com/fraunhoferhhi/vvenc/archive/refs/tags/v1.14.0.tar.gz
+tar -xvf v1.14.0.tar.gz
 ./iosscrach.sh
 ./iossimscrach.sh
 ```
