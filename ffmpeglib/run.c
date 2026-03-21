@@ -1026,13 +1026,15 @@ void filedump( const char *filename, cJSON* root )
 
     if (fmt_ctx->duration != AV_NOPTS_VALUE) {
         int64_t duration = fmt_ctx->duration + (fmt_ctx->duration <= INT64_MAX - 5000 ? 5000 : 0);
-        cJSON_AddNumberToObject(root, "duration", duration / AV_TIME_BASE);
+        //swift側で単位を戻す
+        cJSON_AddNumberToObject(root, "duration", duration );
     } else {
         cJSON_AddStringToObject(root, "duration", "N/A");
     }
 
     if (fmt_ctx->start_time != AV_NOPTS_VALUE) {
-        cJSON_AddNumberToObject(root, "start_time", fmt_ctx->start_time / AV_TIME_BASE);
+        //swift側で単位を戻す
+        cJSON_AddNumberToObject(root, "start_time", fmt_ctx->start_time );
     } else {
         cJSON_AddStringToObject(root, "start_time", "N/A");
     }

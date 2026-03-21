@@ -39,11 +39,13 @@ public class ffprobe {
     public func probe(_ filepath: URL ) throws {
         let mediainfo = try ffmpeglib.Convert.parse(filepath: filepath.path)
         
+        
         if( mediainfo["format"] != nil ) {
             self.format = mediainfo["format"] as! String
         }
         if( mediainfo["duration"] != nil ) {
-            self.duration = mediainfo["duration"] as? Double ?? 0.0
+            let AV_TIME_BASE = 1000000.0
+            self.duration = (mediainfo["duration"] as? Double ?? 0.0) / AV_TIME_BASE
         }
         if( mediainfo["metadata"] != nil ) {
             self.metadata = mediainfo["metadata"] as? [String: String]
