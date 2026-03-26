@@ -1,7 +1,7 @@
 #!/bin/bash
 # set -x
 
-SRCFOLDER="/Users/nosaka/platform/iphone/ffmpeglib/ffmpeg"
+#SRCFOLDER=""
 
 pkg_name=${@: -1}
 

@@ -140,3 +140,9 @@ libopus/makegenerate/
 libopus/output/
 libvpx/libvpx-*
 libvpx/output/
+freetype/freetype-*
+freetype/makegenerate/
+freetype/output
+harfbuzz/harfbuzz-*
+harfbuzz/makegenerate/
+harfbuzz/output/

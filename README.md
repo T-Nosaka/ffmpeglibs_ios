@@ -164,6 +164,21 @@ tar -xvf v1.7.18.tar.gz
 ./iosscrach.sh
 ./iossimscrach.sh
 ```
+## freetype
+### build
+```
+wget https://download.savannah.gnu.org/releases/freetype/freetype-2.14.2.tar.xz
+tar -xvf freetype-2.14.2.tar.xz
+./iosscrach.sh
+./iossimscrach.sh
+```
+## harfbuzz
+### build
+```
+wget https://github.com/harfbuzz/harfbuzz/releases/download/12.3.2/harfbuzz-12.3.2.tar.xz
+tar -xvf harfbuzz-12.3.2.tar.xz
+./scrach.sh
+```
 ## ffmpeg
 ### Requires automake 1.18.1
 ```
