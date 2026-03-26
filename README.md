@@ -25,6 +25,8 @@ $(PROJECT_DIR)/ffmpeglib/fdk-aac/output/arm64/iOSSim
 $(PROJECT_DIR)/ffmpeglib/libopus/output/arm64/iOSSim
 $(PROJECT_DIR)/ffmpeglib/libsdl/output/arm64/iOSSim
 $(PROJECT_DIR)/ffmpeglib/cJSON/output/arm64/iOSSim
+$(PROJECT_DIR)/ffmpeglib/freetype/output/arm64/iOSSim
+$(PROJECT_DIR)/ffmpeglib/harfbuzz/output/arm64/iOSSim
 ```
 ### iPhone
 ```
@@ -39,6 +41,8 @@ $(PROJECT_DIR)/ffmpeglib/libopus/output/arm64/iOS
 $(PROJECT_DIR)/ffmpeglib/libvpx/output/arm64/iOS
 $(PROJECT_DIR)/ffmpeglib/libsdl/output/arm64/iOS
 $(PROJECT_DIR)/ffmpeglib/cJSON/output/arm64/iOS
+$(PROJECT_DIR)/ffmpeglib/freetype/output/arm64/iOS
+$(PROJECT_DIR)/ffmpeglib/harfbuzz/output/arm64/iOS
 ```
 ## Additionally, specify the following link libraries.
 ### Other Linker Flags
@@ -59,6 +63,8 @@ $(PROJECT_DIR)/ffmpeglib/cJSON/output/arm64/iOS
 -lopus
 -lSDL2
 -lcjson
+-lfreetype
+-lharfbuzz
 ```
 #### iPhone only
 add
