@@ -26,6 +26,7 @@ make_ios() {
 
   mkdir -p ${OUTPUT_DIR}/${ARCH}/${OUTTYPE}
   cp src/*.a ${OUTPUT_DIR}/${ARCH}/${OUTTYPE}/.
+  cp -rp ../src ${OUTPUT_DIR}/${ARCH}/${OUTTYPE}/.
   cp -rp src ${OUTPUT_DIR}/${ARCH}/${OUTTYPE}/.
 
   cd ../..

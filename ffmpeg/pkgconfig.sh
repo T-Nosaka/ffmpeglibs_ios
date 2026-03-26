@@ -29,7 +29,7 @@ case $1 in
  --exists)
 #   echo "exist {$pkg_name}" >> ${SRCFOLDER}/pkgconfig.txt
    case $pkg_name in
-     zlib | x264 | x265 | libvvenc | 1.6.1 | fdk-aac | opus | 1.4 | SvtAv1Enc | vulkan | 0.9.0 | 0.5.0 | dav1d | libwebp )
+     zlib | x264 | x265 | libvvenc | 1.6.1 | fdk-aac | opus | 1.4 | SvtAv1Enc | vulkan | 0.9.0 | 0.5.0 | dav1d | libwebp | freetype2 | harfbuzz )
      echo "Package $pkg_name exists."
      ;;
      *)
@@ -40,7 +40,7 @@ case $1 in
  --variable=includedir)
  #  echo "includedir {$pkg_name}" >> ${SRCFOLDER}/pkgconfig.txt
    case $pkg_name in
-     zlib | x264 | x265 | libvvenc | fdk-aac | opus | SvtAv1Enc | vulkan | dav1d | libwebp)
+     zlib | x264 | x265 | libvvenc | fdk-aac | opus | SvtAv1Enc | vulkan | dav1d | libwebp | freetype2 | harfbuzz)
      echo "/usr/include"
      ;;
      *)
@@ -86,6 +86,12 @@ case $1 in
      ;;
      libwebp)
      echo "-lwebp -lsharpyuv"
+     ;;
+     freetype2)
+     echo "-lfreetype"
+     ;;
+     harfbuzz)
+     echo "-lharfbuzz -lfreetype"
      ;;
      *)
      echo "Package ${pkg_name} was not found in the pkg-config search path."

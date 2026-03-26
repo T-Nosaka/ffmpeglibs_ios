@@ -7,6 +7,8 @@ rm -rf output/*
 
 export SRCFOLDER=`pwd`
 
+export PKG_CONFIG_PATH=`pwd`/pkgconfig.sh
+
 cd ffmpeg-8.1
 
 #TOOLCHAIN
@@ -14,6 +16,7 @@ export TOOLCHAIN="/Applications/Xcode.app/Contents/Developer"
 
 #OPENSSL
 export OUTPUT_DIR=`pwd`/../output
+
 
 make_ios() {
 
@@ -44,6 +47,8 @@ make_ios() {
   export C_INCLUDE_PATH=${C_INCLUDE_PATH}:${SRCFOLDER}/../libsvtav1/output/${ARCH}/${OUTTYPE}
   export C_INCLUDE_PATH=${C_INCLUDE_PATH}:${SRCFOLDER}/../dav1d/output/${ARCH}/${OUTTYPE}/include
   export C_INCLUDE_PATH=${C_INCLUDE_PATH}:${SRCFOLDER}/../vvenc/output/${ARCH}/${OUTTYPE}/include
+  export C_INCLUDE_PATH=${C_INCLUDE_PATH}:${SRCFOLDER}/../freetype/output/${ARCH}/${OUTTYPE}/include
+  export C_INCLUDE_PATH=${C_INCLUDE_PATH}:${SRCFOLDER}/../harfbuzz/output/${ARCH}/${OUTTYPE}/src
 
   #Library paths
   export LDFLAGS=${LDFLAGS}" -lstdc++"
@@ -55,6 +60,8 @@ make_ios() {
   export LDFLAGS=${LDFLAGS}" -L"${SRCFOLDER}/../libsvtav1/output/${ARCH}/${OUTTYPE}
   export LDFLAGS=${LDFLAGS}" -L"${SRCFOLDER}/../dav1d/output/${ARCH}/${OUTTYPE}
   export LDFLAGS=${LDFLAGS}" -L"${SRCFOLDER}/../vvenc/output/${ARCH}/${OUTTYPE}
+  export LDFLAGS=${LDFLAGS}" -L"${SRCFOLDER}/../freetype/output/${ARCH}/${OUTTYPE}
+  export LDFLAGS=${LDFLAGS}" -L"${SRCFOLDER}/../harfbuzz/output/${ARCH}/${OUTTYPE}
 
   if [ "${OUTTYPE}" = "iOSSim" ]; then
   EXTCODEC='--enable-libfdk-aac
@@ -80,7 +87,7 @@ make_ios() {
         --cc=${CC} \
         --arch=${ARCH} \
         --prefix=${OUTPUT_DIR} \
-        --pkg-config=`pwd`/../pkgconfig.sh \
+        --pkg-config=${PKG_CONFIG_PATH} \
         --extra-libs="-lm" \
         --target_os="darwin" \
         --sysroot=${SYSROOT} \
@@ -127,6 +134,8 @@ make_ios() {
         --disable-zlib           \
         --disable-devices        \
         --disable-vulkan         \
+        --enable-libfreetype    \
+        --enable-libharfbuzz    \
         ${EXTCODEC}
 
   make
