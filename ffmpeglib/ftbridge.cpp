@@ -63,7 +63,7 @@ bool ftbridgewrap::build(const char* fontpath, int fontsize, const char* strvalu
     hb_glyph_position_t *glyph_pos = hb_buffer_get_glyph_positions(buf, &glyph_count);
 
     // 描画ループ(解析,描画)
-    for( int i=0; i<2; i++ ) {
+    for( int iLoop=0; iLoop<2; iLoop++ ) {
         double cursor_x = 0;
         double cursor_y = 0;
         
@@ -84,10 +84,9 @@ bool ftbridgewrap::build(const char* fontpath, int fontsize, const char* strvalu
             
             FT_Bitmap& bitmap = face->glyph->bitmap;
             
-            m_rendercb(*this, i, bitmap.width,bitmap.rows,bitmap.pitch, bitmap.buffer, cursor_x, cursor_y, x_offset, y_offset);
+            m_rendercb(*this, iLoop, bitmap.width,bitmap.rows,bitmap.pitch, bitmap.buffer, cursor_x, cursor_y, x_offset, y_offset);
             
             // 実際の描画位置 = (cursor_x + x_offset, cursor_y + y_offset)
-            
             cursor_x += x_advance;
             cursor_y += y_advance;
         }
@@ -95,16 +94,3 @@ bool ftbridgewrap::build(const char* fontpath, int fontsize, const char* strvalu
     
     return true;
 }
-
-/*
-static void render(FT_Bitmap& bitmap) {
-    for (int y = 0; y < bitmap.rows; y++) {
-        for (int x = 0; x < bitmap.width; x++) {
-            // ピクセルの輝度に応じて文字を変える（簡易的な可視化）
-            unsigned char pixel = bitmap.buffer[y * bitmap.pitch + x];
-            std::cout << (pixel > 128 ? "##" : (pixel > 0 ? ".." : "  "));
-        }
-        std::cout << std::endl;
-    }
-}
-*/

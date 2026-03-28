@@ -6,7 +6,7 @@
 #include <functional>
 
 /*
- * Freetypeブリッジラッパ
+ * Freetype bridge wrap
  */
 class ftbridgewrap {
 protected:
