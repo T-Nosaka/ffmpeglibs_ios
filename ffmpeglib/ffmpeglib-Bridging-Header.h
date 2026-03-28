@@ -6,4 +6,5 @@
 
 #include "ffplayobjwrap.hpp"
 #include "ffparse.hpp"
+#include "ftbridge.hpp"
 
