@@ -131,11 +131,11 @@ make_ios() {
         --disable-sdl2           \
         --disable-securetransport \
         --disable-xlib           \
-        --disable-zlib           \
         --disable-devices        \
         --disable-vulkan         \
         --enable-libfreetype    \
         --enable-libharfbuzz    \
+        --enable-zlib           \
         ${EXTCODEC}
 
   make
