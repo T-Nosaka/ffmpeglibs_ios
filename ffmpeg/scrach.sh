@@ -49,6 +49,7 @@ make_ios() {
   export C_INCLUDE_PATH=${C_INCLUDE_PATH}:${SRCFOLDER}/../vvenc/output/${ARCH}/${OUTTYPE}/include
   export C_INCLUDE_PATH=${C_INCLUDE_PATH}:${SRCFOLDER}/../freetype/output/${ARCH}/${OUTTYPE}/include
   export C_INCLUDE_PATH=${C_INCLUDE_PATH}:${SRCFOLDER}/../harfbuzz/output/${ARCH}/${OUTTYPE}/src
+  export C_INCLUDE_PATH=${C_INCLUDE_PATH}:${SRCFOLDER}/../libqrencode/output/${ARCH}/${OUTTYPE}
 
   #Library paths
   export LDFLAGS=${LDFLAGS}" -lstdc++"
@@ -62,6 +63,7 @@ make_ios() {
   export LDFLAGS=${LDFLAGS}" -L"${SRCFOLDER}/../vvenc/output/${ARCH}/${OUTTYPE}
   export LDFLAGS=${LDFLAGS}" -L"${SRCFOLDER}/../freetype/output/${ARCH}/${OUTTYPE}
   export LDFLAGS=${LDFLAGS}" -L"${SRCFOLDER}/../harfbuzz/output/${ARCH}/${OUTTYPE}
+  export LDFLAGS=${LDFLAGS}" -L"${SRCFOLDER}/../libqrencode/output/${ARCH}/${OUTTYPE}
 
   if [ "${OUTTYPE}" = "iOSSim" ]; then
   EXTCODEC='--enable-libfdk-aac
@@ -136,6 +138,7 @@ make_ios() {
         --enable-libfreetype    \
         --enable-libharfbuzz    \
         --enable-zlib           \
+        --enable-libqrencode    \
         ${EXTCODEC}
 
   make

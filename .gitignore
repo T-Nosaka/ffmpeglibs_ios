@@ -146,3 +146,6 @@ freetype/output
 harfbuzz/harfbuzz-*
 harfbuzz/makegenerate/
 harfbuzz/output/
+libqrencode/libqrencode-*
+libqrencode/makegenerate/
+libqrencode/output/

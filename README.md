@@ -27,6 +27,7 @@ $(PROJECT_DIR)/ffmpeglib/libsdl/output/arm64/iOSSim
 $(PROJECT_DIR)/ffmpeglib/cJSON/output/arm64/iOSSim
 $(PROJECT_DIR)/ffmpeglib/freetype/output/arm64/iOSSim
 $(PROJECT_DIR)/ffmpeglib/harfbuzz/output/arm64/iOSSim
+$(PROJECT_DIR)/ffmpeglib/libqrencode/output/arm64/iOSSim
 ```
 ### iPhone
 ```
@@ -43,6 +44,7 @@ $(PROJECT_DIR)/ffmpeglib/libsdl/output/arm64/iOS
 $(PROJECT_DIR)/ffmpeglib/cJSON/output/arm64/iOS
 $(PROJECT_DIR)/ffmpeglib/freetype/output/arm64/iOS
 $(PROJECT_DIR)/ffmpeglib/harfbuzz/output/arm64/iOS
+$(PROJECT_DIR)/ffmpeglib/libqrencode/output/arm64/iOS
 ```
 ## Additionally, specify the following link libraries.
 ### Other Linker Flags
@@ -65,6 +67,7 @@ $(PROJECT_DIR)/ffmpeglib/harfbuzz/output/arm64/iOS
 -lcjson
 -lfreetype
 -lharfbuzz
+-lqrencode
 ```
 #### iPhone only
 add
@@ -184,6 +187,13 @@ tar -xvf freetype-2.14.2.tar.xz
 wget https://github.com/harfbuzz/harfbuzz/releases/download/12.3.2/harfbuzz-12.3.2.tar.xz
 tar -xvf harfbuzz-12.3.2.tar.xz
 ./scrach.sh
+```
+## libqrencode
+```
+wget https://github.com/fukuchi/libqrencode/archive/refs/tags/v4.1.1.tar.gz
+tar -xvf v4.1.1.tar.gz
+./iosscrach.sh
+./iossimscrach.sh
 ```
 ## ffmpeg
 ### Requires automake 1.18.1
