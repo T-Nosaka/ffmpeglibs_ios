@@ -40,7 +40,7 @@ case $1 in
  --variable=includedir)
  #  echo "includedir {$pkg_name}" >> ${SRCFOLDER}/pkgconfig.txt
    case $pkg_name in
-     zlib | x264 | x265 | libvvenc | fdk-aac | opus | SvtAv1Enc | vulkan | dav1d | libwebp | freetype2 | harfbuzz | libqrencode )
+     zlib | x264 | x265 | libvvenc | fdk-aac | opus | SvtAv1Enc | vulkan | dav1d | libwebp | freetype2 | harfbuzz | libqrencode | zimg )
      echo "/usr/include"
      ;;
      *)
@@ -95,6 +95,9 @@ case $1 in
      ;;
      libqrencode)
      echo "-lqrencode"
+     ;;
+     zimg)
+     echo "-lzimg"
      ;;
      *)
      echo "Package ${pkg_name} was not found in the pkg-config search path."

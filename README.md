@@ -28,6 +28,7 @@ $(PROJECT_DIR)/ffmpeglib/cJSON/output/arm64/iOSSim
 $(PROJECT_DIR)/ffmpeglib/freetype/output/arm64/iOSSim
 $(PROJECT_DIR)/ffmpeglib/harfbuzz/output/arm64/iOSSim
 $(PROJECT_DIR)/ffmpeglib/libqrencode/output/arm64/iOSSim
+$(PROJECT_DIR)/ffmpeglib/libzimg/output/arm64/iOSSim
 ```
 ### iPhone
 ```
@@ -45,6 +46,7 @@ $(PROJECT_DIR)/ffmpeglib/cJSON/output/arm64/iOS
 $(PROJECT_DIR)/ffmpeglib/freetype/output/arm64/iOS
 $(PROJECT_DIR)/ffmpeglib/harfbuzz/output/arm64/iOS
 $(PROJECT_DIR)/ffmpeglib/libqrencode/output/arm64/iOS
+$(PROJECT_DIR)/ffmpeglib/libzimg/output/arm64/iOS
 ```
 ## Additionally, specify the following link libraries.
 ### Other Linker Flags
@@ -68,6 +70,7 @@ $(PROJECT_DIR)/ffmpeglib/libqrencode/output/arm64/iOS
 -lfreetype
 -lharfbuzz
 -lqrencode
+-lzimg
 ```
 #### iPhone only
 add
@@ -189,11 +192,23 @@ tar -xvf harfbuzz-12.3.2.tar.xz
 ./scrach.sh
 ```
 ## libqrencode
+### build
 ```
 wget https://github.com/fukuchi/libqrencode/archive/refs/tags/v4.1.1.tar.gz
 tar -xvf v4.1.1.tar.gz
 ./iosscrach.sh
 ./iossimscrach.sh
+```
+## libzimg
+### Requires libtool
+```
+brew install libtool
+```
+### build
+```
+wget https://github.com/sekrit-twc/zimg/archive/refs/tags/release-3.0.6.tar.gz
+tar -xvf release-3.0.6.tar.gz
+./scrach.sh
 ```
 ## ffmpeg
 ### Requires automake 1.18.1

@@ -149,3 +149,6 @@ harfbuzz/output/
 libqrencode/libqrencode-*
 libqrencode/makegenerate/
 libqrencode/output/
+libzimg/libzimg-*
+libzimg/makegenerate/
+libzimg/output/
