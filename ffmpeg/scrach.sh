@@ -148,7 +148,7 @@ make_ios() {
   mkdir -p ${OUTPUT_DIR}/${ARCH}/${OUTTYPE}
 
   find . -name '*.a' -print | xargs -I % -t cp % ${OUTPUT_DIR}/${ARCH}/${OUTTYPE}/.
-  find . -name '*.h' | cpio -pdmu ${OUTPUT_DIR}/${ARCH}/${OUTTYPE}/.
+  find . -name '*.h' -exec rsync -R {} ${OUTPUT_DIR}/${ARCH}/${OUTTYPE}/ \;
 }
 
 #ABI simulator

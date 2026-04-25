@@ -38,7 +38,6 @@ make_ios() {
   ./configure \
     --with-sysroot=${SYSROOT} \
     --host=aarch64-apple-ios \
-    --disable-simd \
     --disable-testapp \
     --disable-example
 
