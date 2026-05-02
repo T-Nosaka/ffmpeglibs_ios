@@ -1,1 +1,0 @@
-../../../src/testcommon/win32_bitmap.cpp
