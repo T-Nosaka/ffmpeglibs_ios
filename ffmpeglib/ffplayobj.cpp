@@ -1808,6 +1808,7 @@ int ffplayobj::audio_open(VideoState *opaque, AVChannelLayout *wanted_channel_la
                "SDL advised audio format %d is not supported!\n", spec.format);
         return -1;
     }
+
     if (spec.channels != wanted_spec.channels) {
         av_channel_layout_uninit(wanted_channel_layout);
         av_channel_layout_default(wanted_channel_layout, spec.channels);
@@ -2531,15 +2532,18 @@ int ffplayobj::play(const std::string& strfilename, float speed, std::string vfi
     auto infilepath = strfilename.c_str();
     if ( !vfilter.empty() ) { vfilter += ","; }
     auto vfiltercstr = vfilter + "format=bgra";
+    auto afiltercstr = "aformat=sample_fmts=s16:channel_layouts=stereo";
 
-    int flags, ret;
+    int flags;
 
     infinite_buffer = -1;
     startup_volume = 100;
     nb_vfilters = 0;
     //オーディオフィルタ
     if( afilter.size() > 0 ) {
-        afilters = (char*)afilter.c_str();
+        afilters = (char*)(afilter + ":" + afiltercstr).c_str();
+    } else {
+        afilters = (char*)afiltercstr;
     }
 
     //ビデオフィルタオプション:RGB出力
