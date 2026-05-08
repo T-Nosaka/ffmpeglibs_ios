@@ -2532,7 +2532,8 @@ int ffplayobj::play(const std::string& strfilename, float speed, std::string vfi
     auto infilepath = strfilename.c_str();
     if ( !vfilter.empty() ) { vfilter += ","; }
     auto vfiltercstr = vfilter + "format=bgra";
-    auto afiltercstr = "aformat=sample_fmts=s16:channel_layouts=stereo";
+    auto afiltercstr = std::string("aformat=sample_fmts=s16:channel_layouts=stereo");
+    auto s16fmt = afilter+","+afiltercstr;
 
     int flags;
 
@@ -2541,9 +2542,9 @@ int ffplayobj::play(const std::string& strfilename, float speed, std::string vfi
     nb_vfilters = 0;
     //オーディオフィルタ
     if( afilter.size() > 0 ) {
-        afilters = (char*)(afilter + ":" + afiltercstr).c_str();
+        afilters = (char*)s16fmt.c_str();
     } else {
-        afilters = (char*)afiltercstr;
+        afilters = (char*)afiltercstr.c_str();
     }
 
     //ビデオフィルタオプション:RGB出力
